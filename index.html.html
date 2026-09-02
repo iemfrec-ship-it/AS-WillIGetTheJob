@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💼 Will I Get The Job? — Escape Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0F2247;--teal2:#2F4876;--tl:#E8ECF5;
+  --coral:#C89B3C;--coral2:#DFC077;--cl:#FBF3E1;
+  --amber:#8C6D1F;--amber2:#B7943F;--am:#FDF6E8;
+  --red:#C62828;--green:#2E7D32;
+  --ink:#171E2C;
+  --bg:linear-gradient(135deg,#EEF1F8 0%,#FBF6EC 55%,#EEF1F8 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);min-height:100vh;background-attachment:fixed;color:var(--ink)}
+h1,h2,h3,.pop{font-family:'Poppins',sans-serif}
+.page{max-width:800px;margin:0 auto;padding:16px 18px 40px}
+.card{background:#fff;border-radius:18px;box-shadow:0 4px 22px rgba(15,34,71,.10);padding:24px;margin-bottom:14px}
+.card-teal{border-top:4px solid var(--teal)}
+.card-coral{border-top:4px solid var(--coral)}
+.card-amber{border-top:4px solid var(--amber)}
+.glass{position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:0;opacity:.10;pointer-events:none;
+  background-image:repeating-linear-gradient(0deg,#fff 0 2px,transparent 2px 42px),repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 42px);}
+.btn{border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;border-radius:50px;padding:10px 22px;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;transition:transform .12s,box-shadow .12s}
+.btn:active{transform:scale(.96)!important}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.btn-teal{background:var(--teal);color:#fff;box-shadow:0 3px 0 #050D1E}
+.btn-teal:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #050D1E}
+.btn-coral{background:var(--coral);color:#2B2005;box-shadow:0 3px 0 #8C6D1F}
+.btn-coral:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #8C6D1F}
+.btn-amber{background:var(--amber);color:#fff;box-shadow:0 3px 0 #5A4613}
+.btn-amber:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #5A4613}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 3px 0 #8E1C1C}
+.btn-red:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #8E1C1C}
+.btn-green{background:var(--green);color:#fff;box-shadow:0 3px 0 #1B5E20}
+.btn-green:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #1B5E20}
+.btn-gray{background:#E4E4E4;color:#555}
+.btn-gray:hover:not(:disabled){background:#D3D3D3}
+.btn-outline{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+.btn-outline:hover:not(:disabled){background:var(--tl)}
+.lg{font-size:1rem;padding:13px 30px}
+.sm{font-size:.78rem;padding:6px 14px}
+.full{width:100%;justify-content:center}
+.hdr{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:2px solid #E2D9BE;padding:10px 0;position:sticky;top:0;z-index:30;box-shadow:0 2px 10px rgba(15,34,71,.10)}
+.hdr-in{max-width:800px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+.prg{display:flex;align-items:center;flex:1}
+.prg-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.92rem;font-weight:800;transition:all .3s;flex-shrink:0}
+.prg-done{background:var(--teal);color:#fff;box-shadow:0 0 0 3px #C7CFE2}
+.prg-active{background:var(--coral);color:#2B2005;box-shadow:0 0 0 3px #F1E3BC;animation:pls .8s ease-in-out infinite}
+.prg-future{background:#EDEDED;color:#BBB}
+.prg-line{flex:1;height:3px;margin:0 2px;transition:background .3s}
+.prg-lbl{font-size:.52rem;font-weight:700;color:#AAA;text-align:center;margin-top:2px;max-width:52px;line-height:1.15}
+.sc-pill{background:linear-gradient(135deg,var(--teal),var(--coral));color:#fff;padding:5px 15px;border-radius:50px;font-weight:800;font-size:.88rem;white-space:nowrap;box-shadow:0 3px 10px rgba(15,34,71,.25)}
+.score-fab{position:fixed;top:12px;right:14px;z-index:45;background:linear-gradient(135deg,var(--teal),var(--coral));color:#fff;padding:7px 17px;border-radius:50px;font-weight:800;font-size:.9rem;box-shadow:0 3px 12px rgba(15,34,71,.35);white-space:nowrap}
+.rep-fab{position:fixed;bottom:16px;left:16px;z-index:40}
+input,textarea{font-family:'Inter',sans-serif;border:2px solid #E0E0E0;border-radius:11px;padding:10px 13px;font-size:.9rem;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,34,71,.12)}
+textarea{resize:vertical;font-family:'Inter',sans-serif;line-height:1.6}
+.opt{display:flex;align-items:center;gap:9px;padding:11px 14px;border:2px solid #E8E8E8;border-radius:12px;margin-bottom:8px;cursor:pointer;font-weight:600;font-size:.88rem;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--teal2);background:var(--tl)}
+.opt.sel{border-color:var(--teal);background:#E9EDF6}
+.opt.right{border-color:var(--green);background:#EDF7EE}
+.opt.wrong{border-color:var(--red);background:#FFEBEE}
+.let{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0;transition:all .15s}
+.vfr{display:flex;align-items:center;gap:8px;padding:9px 12px;border:2px solid #E8E8E8;border-radius:12px;margin-bottom:7px;transition:all .15s;flex-wrap:wrap}
+.tvf{padding:5px 13px;border-radius:50px;border:2px solid;cursor:pointer;font-weight:700;font-size:.79rem;transition:all .15s;font-family:'Inter',sans-serif}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mi{padding:9px 12px;border:2px solid #E8E8E8;border-radius:11px;cursor:pointer;font-weight:600;font-size:.83rem;min-height:50px;display:flex;align-items:center;transition:all .15s;line-height:1.35}
+.mi:hover:not(.mu):not(.mok):not(.mko){border-color:var(--coral);background:var(--cl)}
+.mi.msel{border-color:var(--coral);background:#F3E6C4;box-shadow:0 0 0 3px rgba(200,155,60,.25)}
+.mi.mu{opacity:.4;cursor:default;border-style:dashed}
+.mi.mok{border-color:var(--green);background:#EDF7EE;opacity:1;cursor:default}
+.mi.mko{border-color:var(--red);background:#FFEBEE;opacity:1;cursor:default}
+.sit{background:linear-gradient(135deg,var(--tl),var(--cl));border:2px solid var(--teal);border-radius:16px;padding:18px}
+.slbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--teal);margin-bottom:2px}
+.sval{font-weight:600;font-size:.9rem;margin-bottom:12px;line-height:1.5}
+.hint{background:var(--am);border:2px dashed var(--amber);border-radius:11px;padding:9px 13px;font-size:.83rem;font-weight:700;color:#5A4613}
+.rtxt{background:#F8FAFD;border-left:4px solid var(--teal2);padding:15px;border-radius:0 12px 12px 0;font-size:.87rem;line-height:1.8;margin-bottom:14px;color:#333}
+.stars{font-size:1.5rem;letter-spacing:2px;color:var(--coral)}
+.ibx{background:linear-gradient(135deg,var(--teal),var(--coral));border-radius:20px;padding:26px;text-align:center}
+.iwd{font-family:'Poppins',sans-serif;font-size:2.5rem;font-weight:900;color:#fff;letter-spacing:.06em;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.ok{background:#EDF7EE;border:2px solid var(--green);border-radius:12px;padding:11px;font-weight:700;color:#1B5E20;font-size:.88rem}
+.ko{background:var(--am);border:2px solid var(--amber);border-radius:12px;padding:11px;font-weight:700;color:#5A4613;font-size:.88rem}
+.err{background:#FFEBEE;border:2px solid var(--red);border-radius:12px;padding:11px;font-weight:700;color:#7F0000;font-size:.88rem}
+.rolecard{border-radius:14px;padding:16px;margin-bottom:10px}
+.roleA{background:linear-gradient(135deg,var(--tl),#fff);border:2px solid var(--teal)}
+.roleB{background:linear-gradient(135deg,var(--cl),#fff);border:2px solid var(--coral)}
+@keyframes fadein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pls{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fadein{animation:fadein .32s ease-out}
+.chip{background:linear-gradient(135deg,var(--teal),var(--coral));color:#fff;padding:3px 11px;border-radius:50px;font-weight:700;font-size:.78rem;display:inline-block;margin:2px}
+@media(max-width:580px){.mg{grid-template-columns:1fr}.card{padding:17px}.iwd{font-size:1.85rem}.lg{font-size:.93rem;padding:11px 22px}}
+@media print{.noprint{display:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ═══════════════════════════ GAME DATA ═══════════════════════════ */
+const WW=['YOU','HAVE','GOT','THE','JOB'];
+
+/* Mission 1 — The Job Ad vocabulary bank (30 items, QCM) */
+const POOL1=[
+ {w:'Job vacancy',d:'An open position that a company wants to fill'},
+ {w:'Job advertisement',d:'The public announcement of a position to fill'},
+ {w:'Applicant',d:'Someone submitting an application for a role'},
+ {w:'Candidate',d:'Someone being evaluated for a role'},
+ {w:'Curriculum Vitae (CV)',d:"A summary of someone's education and career history"},
+ {w:'Cover letter',d:'A short note of motivation sent alongside your CV'},
+ {w:'Qualification',d:'Proof, such as a diploma, that you can do a job'},
+ {w:'Reference',d:"Someone who can vouch for a candidate's character"},
+ {w:'Interview',d:'A meeting where a candidate is questioned and assessed'},
+ {w:'Recruiter',d:'The professional in charge of finding new staff'},
+ {w:'Human Resources (HR)',d:'The team handling staff, hiring and contracts'},
+ {w:'Background check',d:"Verifying a candidate's history before hiring"},
+ {w:'Criminal record',d:"The official record of someone's past convictions"},
+ {w:'Security licence',d:'The legal authorisation required to work in security'},
+ {w:'Professional card',d:'Proof that a security agent is legally allowed to work'},
+ {w:'Employer',d:'The company or person who hires staff'},
+ {w:'Employment contract',d:'The legal paper setting out the terms of a job'},
+ {w:'Probation period',d:'The first weeks of a job, used to confirm suitability'},
+ {w:'Shift pattern',d:'How working hours are organised across the week'},
+ {w:'Salary',d:"What someone is paid for their work"},
+ {w:'Skills',d:'What someone is able to do well'},
+ {w:'Experience',d:"What you've learned by actually doing the job"},
+ {w:'Training',d:'Preparing someone with the skills they need'},
+ {w:'Certificate',d:'Written proof that you hold a qualification'},
+ {w:'Deadline',d:'The last moment something can still be submitted'},
+ {w:'Panel',d:'The group deciding who gets hired'},
+ {w:'Shortlist',d:'The narrowed-down group invited to interview'},
+ {w:'Onboarding',d:'Settling a new hire into their role'},
+ {w:'Punctuality',d:'Never being late'},
+ {w:'Vigilance',d:'Staying alert to spot problems early'}
+];
+
+/* Mission 3 — HR Terminology: French term → English translation (30 pairs) */
+const POOL3=[
+ {w:"Offre d'emploi",d:'Job offer'},
+ {w:'Candidat',d:'Candidate'},
+ {w:"Entretien d'embauche",d:'Job interview'},
+ {w:'Lettre de motivation',d:'Cover letter'},
+ {w:'Curriculum vitae',d:'CV'},
+ {w:'Références',d:'References'},
+ {w:'Compétences',d:'Skills'},
+ {w:'Expérience professionnelle',d:'Professional experience'},
+ {w:'Casier judiciaire',d:'Criminal record'},
+ {w:'Carte professionnelle',d:'Professional card'},
+ {w:"Période d'essai",d:'Probation period'},
+ {w:'Employeur',d:'Employer'},
+ {w:'Contrat de travail',d:'Employment contract'},
+ {w:'Formation',d:'Training'},
+ {w:'Diplôme',d:'Diploma'},
+ {w:'Recruteur',d:'Recruiter'},
+ {w:'Ressources humaines',d:'Human Resources'},
+ {w:'Jury',d:'Panel'},
+ {w:'Présélection',d:'Shortlisting'},
+ {w:'Poste vacant',d:'Vacancy'},
+ {w:'Date limite',d:'Deadline'},
+ {w:'Salaire',d:'Salary'},
+ {w:'Horaires de travail',d:'Working hours'},
+ {w:"Rotation d'équipes",d:'Shift pattern'},
+ {w:'Habilitation',d:'Security clearance'},
+ {w:'Vérification des antécédents',d:'Background check'},
+ {w:'Intégration',d:'Onboarding'},
+ {w:'Uniforme',d:'Uniform'},
+ {w:'Consigne',d:'Instruction'},
+ {w:'Ponctualité',d:'Punctuality'}
+];
+
+/* Mission 2 — The Candidate's File: 3 reading sets (English text + True/False in French) */
+const M2SETS=[
+ {title:'The First Interview',
+  text:`It was 9 a.m. when Amir arrived at Guardline Security's office for his first job interview. He had printed his CV and cover letter the night before and checked his professional card twice before leaving home. The receptionist asked him to wait in a small room with two other candidates.
+
+When his name was called, Amir walked into the interview room and greeted the two-person panel with a firm handshake. They asked him about his previous experience, his availability for night shifts, and why he wanted to work in event security. Amir answered calmly, using clear examples from his training.
+
+At the end of the interview, the recruiter thanked him and explained that a background check would be carried out before any final decision. Amir left the building feeling confident, even though he knew the result could take up to two weeks.`,
+  vf:[
+   {s:"Amir se rend à un entretien d'embauche chez Guardline Security.",a:true},
+   {s:"Amir n'a apporté aucun document avec lui.",a:false},
+   {s:'Amir a attendu seul, sans autre candidat.',a:false},
+   {s:'Le jury est composé de deux personnes.',a:true},
+   {s:'On ne lui a posé aucune question sur ses horaires.',a:false},
+   {s:'Le recruteur mentionne une vérification des antécédents.',a:true},
+   {s:'Le résultat est donné immédiatement à la fin de l\'entretien.',a:false},
+   {s:'Amir quitte l\'entretien en se sentant plutôt confiant.',a:true}
+  ]},
+ {title:'The Background Check',
+  text:`Two weeks after her interview, Léna had still not received an answer from the security company. She decided to call the HR department to ask about the delay. The recruiter explained that her background check was taking longer than usual because her previous employer was based abroad.
+
+Léna understood the situation and asked politely if there was anything she could do to help. The recruiter suggested she send an additional reference letter directly from her former manager, which could speed up the process.
+
+Léna contacted her former employer the same day and received the letter within twenty-four hours. She forwarded it immediately to the HR department, thanking them for their patience and clear communication throughout the process.
+
+Three days later, Léna received a phone call confirming that she had passed the background check and would be offered the position, pending a final signature on her employment contract.`,
+  vf:[
+   {s:"Léna n'a reçu aucune réponse deux semaines après son entretien.",a:true},
+   {s:'Léna décide de ne rien faire et attend sans contacter personne.',a:false},
+   {s:"Le retard est dû au fait que son ancien employeur était à l'étranger.",a:true},
+   {s:'Le recruteur lui propose de fournir une lettre de référence supplémentaire.',a:true},
+   {s:"Léna refuse de contacter son ancien employeur.",a:false},
+   {s:'Elle reçoit la lettre en moins de vingt-quatre heures.',a:true},
+   {s:"Léna n'a jamais transmis la lettre au service RH.",a:false},
+   {s:'Léna finit par obtenir le poste, sous réserve de signer le contrat.',a:true}
+  ]},
+ {title:'The Trial Shift',
+  text:`Before confirming her contract, Marco's employer asked him to complete a one-day trial shift at a large shopping centre. He arrived thirty minutes early, wearing his uniform, and reported to the site supervisor as instructed in his onboarding email.
+
+During the shift, Marco patrolled the main entrance, checked visitors' bags politely, and remained vigilant near the emergency exits. When a customer asked for directions to the lost property office, Marco guided her calmly and professionally, exactly as he had been trained to do.
+
+At the end of the day, the site supervisor gave Marco some brief feedback, praising his punctuality and his calm attitude with the public. She noted a few small points to improve, such as radio communication with the control room.
+
+Marco thanked her for the opportunity and left feeling that the trial shift had gone well overall, despite a few areas he still needed to work on.`,
+  vf:[
+   {s:'Marco doit réaliser une journée d\'essai avant la signature de son contrat.',a:true},
+   {s:'Marco arrive en retard le jour de sa journée d\'essai.',a:false},
+   {s:'Marco porte son uniforme dès son arrivée.',a:true},
+   {s:'Marco refuse de contrôler les sacs des visiteurs.',a:false},
+   {s:"Marco aide une cliente à trouver le bureau des objets trouvés.",a:true},
+   {s:"La superviseure ne donne aucun retour à Marco à la fin de la journée.",a:false},
+   {s:'La superviseure félicite la ponctualité de Marco.',a:true},
+   {s:'Marco termine la journée en pensant que tout s\'est mal passé.',a:false}
+  ]}
+];
+
+/* Mission 4 — The Interview: 3 role-based oral scenario sets (Role A = Recruiter, Role B = Candidate) */
+const ROLES=[
+ {e:'💼',t:'Interview Round — Motivation',
+  a:{label:'Rôle A — Recruiter',w:'You are the recruiter. Ask the candidate why they want to work in event / retail security, and what makes them a good fit for the team.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. why / motivation / team / security / experience / available'},
+  b:{label:'Rôle B — Candidate',w:'You are the candidate. Explain briefly why you applied for this security job and what skills or qualities you can offer.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. motivated / reliable / trained / calm / teamwork / punctual'}},
+ {e:'🕒',t:'Interview Round — Availability',
+  a:{label:'Rôle A — Recruiter',w:'You are the recruiter. Ask the candidate about their availability for night shifts, weekends, and how flexible their schedule is.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. availability / night shift / weekend / flexible / schedule'},
+  b:{label:'Rôle B — Candidate',w:'You are the candidate. Answer clearly about which shifts you can work and mention any constraints you may have.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. available / flexible / weekends / no problem / transport'}},
+ {e:'⚠️',t:'Interview Round — Difficult Situation',
+  a:{label:'Rôle A — Recruiter',w:'You are the recruiter. Ask the candidate how they would handle an aggressive visitor who refuses to show identification at the entrance.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. difficult situation / how would you / aggressive visitor / handle'},
+  b:{label:'Rôle B — Candidate',w:'You are the candidate. Explain, calmly, the steps you would take to manage the situation professionally and safely.',h:'💡 Mots-clés SEULEMENT (max 8) — ex. stay calm / explain rules / call supervisor / de-escalate / polite'}}
+];
+
+/* Mission 5 — The Verdict: free written statement, English, scored by word count (70 words guidance) */
+const M5BRIEF={
+  ctx:'Final Round — Written Statement to the Panel',
+  situation:`The panel has asked every candidate to write a short final statement summarising why they should be offered the position of security agent. This is your last chance to convince them before their decision.`,
+  ask:'Write your final statement in ENGLISH (70 words minimum recommended): explain your motivation, your main skills, and why you would be a reliable security agent.'
+};
+
+/* ═══════════════════════════ STATE & UTILS ═══════════════════════════ */
+let S={
+  scr:'home',tc:'0504',sc:'SECURITYJOB',
+  g:{n:'',p:[]},pts:0,
+  sh:[],rv:[],res:{},wr:[],finalAtt:1,
+  t0:null,t1:null,
+  att:{m1:1,m2:1,m3:1,m4:1},
+  sets1:[],sets3:[],
+  m5:{text:''}
+};
+let E={};let F={};
+const shuf=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
+const ftm=(s,e)=>{if(!s||!e)return'—';const d=Math.round((e-s)/1e3);return`${0|d/60}min ${d%60}s`;};
+
+/* ── Local progress save (browser localStorage only, same device — never transmitted) ── */
+const SAVE_PREFIX='wigtj_save_';
+function teamKey(fn0,ln0,fn1,ln1){const ids=[`${fn0}-${ln0}`,`${fn1}-${ln1}`].sort();return ids.join('_');}
+function saveProgress(){
+  if(!S._teamKey||!S.t0)return;
+  try{
+    const data={g:S.g,pts:S.pts,sh:S.sh,wordFor:S.wordFor,rv:S.rv,res:S.res,wr:S.wr,t0:S.t0,
+      att:S.att,sets1:S.sets1,sets3:S.sets3,m5:S.m5,finalAtt:S.finalAtt,scr:S.scr,savedAt:Date.now()};
+    localStorage.setItem(SAVE_PREFIX+S._teamKey,JSON.stringify(data));
+  }catch(e){/* storage unavailable — game still works, simply without resume */}
+}
+function loadProgress(key){
+  try{const raw=localStorage.getItem(SAVE_PREFIX+key);return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function clearProgress(key){try{localStorage.removeItem(SAVE_PREFIX+key);}catch(e){}}
+
+function starRating(n,t){const p=t?n/t:0;if(p>=.9)return{s:3,msg:'Excellent ! 🔥',c:'#8C6D1F'};if(p>=.8)return{s:2,msg:'Bien joué ! 👍',c:'#0F2247'};if(p>=.6)return{s:1,msg:'Peut mieux faire',c:'#C89B3C'};return{s:0,msg:'Courage, continuez ! 💪',c:'#C62828'};}
+function stars(n){return'<span class="stars">'+'★'.repeat(n)+'<span style="opacity:.25">'+'★'.repeat(3-n)+'</span></span>';}
+function wc(str){return (str.trim().match(/\S+/g)||[]).length;}
+
+/* Build a QCM set from a vocabulary pool subset — distractors drawn from the FULL bank */
+function buildQCMSet(items,fullPool){
+  const pool=fullPool||items;
+  return items.map((item)=>{
+    const others=pool.filter(x=>x.w!==item.w);
+    const distractors=shuf(others).slice(0,3).map(x=>x.d);
+    const opts=shuf([item.d,...distractors]);
+    return{q:`What does "${item.w}" mean?`,o:opts,c:opts.indexOf(item.d)};
+  });
+}
+
+/* ═══════════════════════════ UI ATOMS ═══════════════════════════ */
+const btn=(t,fn,c='teal',extra='')=>`<button class="btn btn-${c} ${extra}" onclick="${fn}">${t}</button>`;
+function hdr(lvl){
+  const ls=[['📋','Vocab'],['📖','Lecture'],['🔤','Termes'],['🎤','Entretien'],['✍️','Verdict']];
+  const dots=ls.map(([e,l],i)=>`${i>0?`<div class="prg-line" style="background:${i+1<=lvl?'var(--teal)':'#E0E0E0'}"></div>`:''}
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div class="prg-dot ${i+1<lvl?'prg-done':i+1===lvl?'prg-active':'prg-future'}">${i+1<lvl?'✓':e}</div>
+      <div class="prg-lbl">${l}</div>
+    </div>`).join('');
+  return `<div class="hdr noprint"><div class="hdr-in"><div class="prg">${dots}</div></div></div>`;
+}
+function lvlIntro(e,t,sub,desc,fn,col='teal'){
+  return `<div class="card card-${col} fadein"><div style="text-align:center;margin-bottom:18px"><div style="font-size:2.8rem">${e}</div><h2 class="pop" style="color:var(--${col});font-size:1.65rem;margin-top:5px">${t}</h2><p style="color:var(--coral);font-weight:700;font-size:.85rem;margin-top:4px">${sub}</p></div><div style="background:#F8FAFD;border-radius:11px;padding:14px;margin-bottom:18px;font-size:.9rem;color:#444;line-height:1.7">${desc}</div><div style="text-align:center">${btn("Lancer la mission 🎯",fn,'teal','lg')}</div></div>`;
+}
+function indiceScreen(mission,onNext){
+  const w=S.wordFor[mission];
+  if(w&&!S.rv.includes(w))S.rv.push(w);
+  const filled=S.rv.map(x=>`<div style="background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);color:#fff;padding:7px 18px;border-radius:50px;font-family:'Poppins';font-weight:900;font-size:1.1rem;display:inline-block;margin:3px">${x}</div>`).join('');
+  return `<div class="ibx fadein" style="margin-bottom:14px"><div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.7);margin-bottom:7px">Mot secret découvert</div><div class="iwd">${w}</div><div style="color:rgba(255,255,255,.7);font-size:.82rem;margin-top:9px">📝 Notez ce mot ! Les 5 forment le verdict final.</div></div>
+  <div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px;font-size:1rem">🧩 Collection (${S.rv.length}/5)</div><div style="margin-bottom:10px">${filled}</div><p style="color:#AAA;font-size:.78rem">Les fragments sont dans le désordre !</p></div>
+  <div style="text-align:center;margin-top:10px">${btn('Mission suivante →',onNext,'coral','lg')}</div>`;
+}
+function scoreBadge(){
+  const hiddenScreens=['home','tlg','tdb','resume'];
+  if(hiddenScreens.includes(S.scr))return'';
+  return `<div class="score-fab noprint">⭐ ${S.pts} pts</div>`;
+}
+function reportFab(){
+  const hiddenScreens=['home','tlg','tdb','rules','slg','grp','resume','rep'];
+  if(hiddenScreens.includes(S.scr)||!S.t0)return'';
+  return `<div class="rep-fab noprint">${btn('📥 Rapport',"S._returnTo=S.scr;S._returnE=E;go('rep')",'gray','sm')}</div>`;
+}
+
+/* ═══════════════════════════ HOME ═══════════════════════════ */
+function vHome(){
+  return `<div style="min-height:100vh;display:flex;flex-direction:column">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 18px">
+    <div style="text-align:center;max-width:520px">
+      <div style="font-size:1.8rem;margin-bottom:4px;animation:float 3s ease-in-out infinite">💼</div>
+      <h1 class="pop" style="font-size:2rem;color:var(--teal);margin-bottom:5px">Will I Get The Job?</h1>
+      <div style="background:linear-gradient(135deg,var(--teal),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;font-size:1rem;margin-bottom:5px">A Security Recruitment Escape Game</div>
+      <p style="color:#888;font-size:.88rem;margin-bottom:30px">CAP Agent de Sécurité — Mission recrutement</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <div class="card" style="flex:1;min-width:170px;max-width:215px;text-align:center;border-top:3px solid var(--teal)">
+          <div style="font-size:2.2rem;margin-bottom:8px">🎯</div>
+          <div class="pop" style="color:var(--teal);margin-bottom:4px">Équipe</div>
+          <div style="color:#888;font-size:.82rem;margin-bottom:15px">Rejoindre la mission</div>
+          ${btn("C'est parti ! →","go('rules')",'teal','full')}
+        </div>
+        <div class="card" style="flex:1;min-width:170px;max-width:215px;text-align:center;border-top:3px solid var(--coral)">
+          <div style="font-size:2.2rem;margin-bottom:8px">👔</div>
+          <div class="pop" style="color:var(--coral);margin-bottom:4px">Professeur</div>
+          <div style="color:#888;font-size:.82rem;margin-bottom:15px">Gérer le jeu</div>
+          ${btn('Accès prof 🔑',"go('tlg')",'coral','full')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="text-align:center;padding:14px;color:#BBB;font-size:.78rem;border-top:1px solid #E2D9BE">
+    Créé par <strong style="color:var(--teal)">C. Iemfre</strong> &nbsp;|&nbsp;
+    <span style="color:var(--coral);cursor:pointer;font-weight:700" onclick="go('rgpd')">🔒 RGPD</span>
+  </footer></div>`;
+}
+
+/* ═══════════════════════════ RULES PAGE ═══════════════════════════ */
+function vRules(){
+  const missions=[
+    {n:1,e:'📋',t:'The Job Ad',d:'QCM vocabulaire — comprenez une offre d\'emploi et le jargon du recrutement en sécurité.',c:'var(--teal)'},
+    {n:2,e:'📖',t:"The Candidate's File",d:'Compréhension écrite — un texte professionnel, exercice vrai/faux.',c:'var(--coral)'},
+    {n:3,e:'🔤',t:'HR Terminology',d:'Traduction — associez les termes RH français à leur traduction anglaise.',c:'#8C6D1F'},
+    {n:4,e:'🎤',t:'The Interview',d:"Expression orale à deux rôles — Recruteur (Rôle A) et Candidat (Rôle B).",c:'#2F4876'},
+    {n:5,e:'✍️',t:'The Verdict',d:'Rédaction finale en anglais — convainquez le jury de vous embaucher (70 mots min. recommandés).',c:'#1B5E20'}
+  ];
+  return `<div style="min-height:100vh;padding-bottom:30px">
+  <div class="glass" style="background:linear-gradient(135deg,var(--teal),var(--coral));padding:28px 20px;text-align:center;color:#fff">
+    <div style="position:relative">
+      <div style="font-size:2.5rem;margin-bottom:6px">💼</div>
+      <h1 class="pop" style="font-size:1.9rem;margin-bottom:5px">Mission Briefing</h1>
+      <div style="font-size:.9rem;opacity:.85">Will I Get The Job? • English Escape Game</div>
+    </div>
+  </div>
+  <div class="page">
+    <div class="card" style="border-left:4px solid var(--amber);margin-top:4px">
+      <div class="pop" style="color:var(--amber);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🚨 Contexte de mission</div>
+      <p style="color:#444;font-size:.9rem;line-height:1.75">Vous postulez pour un poste d'<strong>agent de sécurité</strong>. Votre binôme doit franchir toutes les étapes du recrutement : offre d'emploi, dossier de candidature, vocabulaire RH, entretien d'embauche... Complétez les 5 missions pour trouver les <strong>5 mots secrets</strong>. Recomposez la phrase pour entrer le Master Code et décrocher le poste.</p>
+    </div>
+    <div class="pop" style="color:var(--teal);margin:18px 0 10px;font-size:1rem">🗺️ Les 5 missions</div>
+    <div style="display:grid;gap:9px;margin-bottom:18px">
+      ${missions.map(m=>`<div class="card" style="display:flex;align-items:flex-start;gap:13px;padding:14px 18px;border-left:4px solid ${m.c}">
+        <div style="width:38px;height:38px;border-radius:50%;background:${m.c};color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">${m.e}</div>
+        <div><div style="font-weight:800;font-size:.92rem;color:#333">Mission ${m.n} — ${m.t}</div><div style="color:#888;font-size:.82rem;margin-top:3px;line-height:1.5">${m.d}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div class="pop" style="color:var(--amber);margin-bottom:12px">📐 Règles du jeu</div>
+      <div style="display:grid;gap:8px;font-size:.87rem">
+        ${[['⭐ Points','<strong>+50 pts</strong> si réussi dès la 1ère tentative (≥80%).'],
+           ['🔁 3 tentatives','Score insuffisant ? Vous retentez avec un <strong>nouveau vocabulaire / un nouveau texte</strong>. Aucune mission ne bloque la partie.'],
+           ['🎤 Entretien (Mission 4)','Deux rôles distincts : l\'un joue le recruteur, l\'autre le candidat. Le professeur donne une <strong>note sur 10</strong> que vous saisissez vous-même.'],
+           ['✍️ The Verdict (Mission 5)','Rédaction libre en anglais. Vous pouvez vous arrêter quand vous voulez : les points dépendent du nombre de mots (70 mots minimum recommandés).'],
+           ['🧩 Code secret','5 fragments révélés dans le désordre. Recomposez la phrase pour gagner : <strong>+10 pts</strong> si trouvée, <strong>−10 pts</strong> si non trouvée après 3 tentatives.'],
+           ['📥 Rapport','PDF téléchargeable à la fin avec résultats et détails.']
+        ].map(([k,v])=>`<div style="display:flex;gap:10px;background:#F8FAFD;padding:10px 12px;border-radius:10px;align-items:flex-start"><span style="flex-shrink:0;font-size:1rem">${k.split(' ')[0]}</span><span><strong>${k.split(' ').slice(1).join(' ')} :</strong> <span style="color:#555">${v}</span></span></div>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px">
+      ${btn('✅ Accepter la mission',"go('slg')",'teal','lg')}
+      <div style="margin-top:10px">${btn('← Retour',"go('home')",'gray','sm')}</div>
+    </div>
+  </div></div>`;
+}
+
+/* ═══════════════════════════ LOGIN ═══════════════════════════ */
+function vLogin(title,next){
+  const isT=next==='tdb';
+  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="card fadein" style="max-width:380px;width:100%;border-top:4px solid ${isT?'var(--coral)':'var(--teal)'}">
+    <div style="color:#AAA;cursor:pointer;font-size:.83rem;margin-bottom:14px" onclick="go('home')">← Accueil</div>
+    <div style="text-align:center;margin-bottom:20px"><div style="font-size:2.5rem">${isT?'👔':'🎯'}</div>
+      <h2 class="pop" style="color:${isT?'var(--coral)':'var(--teal)'};font-size:1.55rem;margin-top:6px">${title}</h2>
+    </div>
+    <input id="lgc" type="password" placeholder="Entrez le code d'accès" style="margin-bottom:9px" onkeydown="if(event.key==='Enter')doLogin('${next}')">
+    <div id="lge" style="color:var(--red);font-weight:700;font-size:.83rem;min-height:17px;margin-bottom:8px"></div>
+    ${btn('Accéder →',`doLogin('${next}')`,'teal','full')}
+  </div></div>`;
+}
+function doLogin(next){
+  const v=(document.getElementById('lgc')||{}).value||'';
+  if(v.toUpperCase()===(next==='tdb'?S.tc:S.sc.toUpperCase()))go(next);
+  else{const e=document.getElementById('lge');if(e)e.textContent='Code incorrect. Réessayez.';}
+}
+
+/* ═══════════════════════════ TEACHER ═══════════════════════════ */
+function vTeacher(){
+  return `<div style="min-height:100vh;padding:20px"><div style="max-width:700px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-top:6px">
+    <h2 class="pop" style="color:var(--coral);font-size:1.55rem">👔 Interface Professeur</h2>
+    ${btn('← Accueil',"go('home')",'gray','sm')}
+  </div>
+  <div class="card card-coral"><div class="pop" style="color:var(--coral);margin-bottom:11px">🔑 Code d'accès équipes</div>
+    <p style="color:#888;font-size:.87rem;margin-bottom:5px">Code fixé pour ce jeu : <strong style="color:var(--coral);font-family:monospace;font-size:1.15rem">${S.sc}</strong></p>
+    <p style="color:#AAA;font-size:.78rem">Communiquez ce code aux binômes avant de lancer le jeu. Votre code professeur (0504) reste le même pour tous les jeux.</p>
+  </div>
+  <div class="card card-teal"><div class="pop" style="color:var(--teal);margin-bottom:12px">📋 Récapitulatif du jeu</div>
+    ${[['Master Code final','YOU HAVE GOT THE JOB (fragments révélés dans le désordre) — +10 pts si trouvé, −10 pts si non trouvé après 3 tentatives'],
+       ['Mode de jeu','Binôme fixe — 2 élèves par équipe, identifiant commun XX-YY / XX-YY'],
+       ['Système de points (écrit)','+50 pts tentative 1 réussie (≥80%) • +30 pts tentative 2 (≥70%) • tentative 3 toujours validée, points proportionnels'],
+       ['Pénalités','−10 pts si tentative 1 échouée • −15 pts si tentative 2 échouée'],
+       ['Mission 4 — Entretien (oral, rôles)','Un(e) élève joue le recruteur (Rôle A), l\'autre le candidat (Rôle B), rôles tirés au sort à chaque tentative. Vous annoncez une note orale sur 10 ; le binôme la saisit directement. ≥9/10 = réussi ; sinon nouvelle tentative (≥8/10 en tentative 2)'],
+       ['Mission 5 — The Verdict (écrit)','Pas de minimum strictement imposé, l\'équipe arrête sa rédaction quand elle le souhaite (70 mots recommandés). Points selon le nombre de mots : <20 mots −20 pts • 20-39 −10 pts • 40-59 −5 pts • 60-69 +5 pts • 70-99 +20 pts • 100 mots et + bonus +35 pts. Le texte reste visible dans le PDF pour une correction et une note de votre part.']
+    ].map(([k,v])=>`<div style="background:#F0F3FA;padding:10px 13px;border-radius:10px;margin-bottom:8px;font-size:.86rem"><strong style="color:var(--teal)">${k} :</strong> <span style="color:#555">${v}</span></div>`).join('')}
+  </div>
+  <div class="card card-coral"><div class="pop" style="color:var(--coral);margin-bottom:12px">🎓 Critères d'évaluation orale — Mission 4</div>
+    <div style="background:var(--cl);padding:11px 13px;border-radius:10px;border:1px solid var(--coral2);font-size:.86rem"><strong style="color:var(--coral)">The Interview :</strong> <span style="color:#555">Question posée clairement par le Rôle A, réponse structurée et pertinente du Rôle B, mots-clés adaptés (pas de phrases apprises par cœur), attitude professionnelle des deux élèves.</span></div>
+  </div></div></div>`;
+}
+
+/* ═══════════════════════════ TEAM SETUP (BINÔME FIXE — 2 JOUEURS) ═══════════════════════════ */
+function vGroup(){
+  const rows=[0,1].map(i=>`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;align-items:center">
+    <input id="fn${i}" type="text" placeholder="JO" value="${F['fn'+i]||''}" oninput="F['fn${i}']=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,2);rChip(${i})" style="text-align:center;font-weight:800;font-family:monospace;letter-spacing:.12em">
+    <input id="ln${i}" type="text" placeholder="SM" value="${F['ln'+i]||''}" oninput="F['ln${i}']=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,2);rChip(${i})" style="text-align:center;font-weight:800;font-family:monospace;letter-spacing:.12em">
+    <div id="chip${i}" style="text-align:center">${F['fn'+i]&&F['ln'+i]?`<span class="chip">${F['fn'+i]}-${F['ln'+i]}</span>`:'<span style="color:#DDD;font-weight:800">--</span>'}</div>
+  </div>`).join('');
+  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="card fadein" style="max-width:530px;width:100%;border-top:4px solid var(--teal)">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:2.5rem">💼</div>
+      <h2 class="pop" style="color:var(--teal);font-size:1.6rem;margin-top:6px">Identification binôme</h2>
+      <p style="color:#888;font-size:.83rem;margin-top:3px">Vous jouez en binôme (2 candidats) — enregistrez votre équipe avant de commencer</p>
+    </div>
+    <label style="font-weight:700;display:block;margin-bottom:6px;font-size:.87rem;color:#444">🏷️ Nom de l'équipe</label>
+    <input id="gn" type="text" placeholder="Ex : Team Guardline" value="${F.gn||''}" oninput="F.gn=this.value" style="margin-bottom:15px">
+    <label style="font-weight:700;display:block;margin-bottom:6px;font-size:.87rem;color:#444">👤 Les 2 candidats</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;background:#F5F5F5;padding:7px 10px;border-radius:9px">
+      ${['2 lettres prénom','2 lettres nom','ID'].map(h=>`<div style="font-size:.68rem;font-weight:800;color:#AAA;text-align:center">${h}</div>`).join('')}
+    </div>
+    ${rows}
+    <div id="ge" style="color:var(--red);font-weight:700;font-size:.83rem;min-height:17px;margin-top:6px;margin-bottom:10px"></div>
+    <p style="color:#AAA;font-size:.76rem;text-align:center;margin-bottom:10px">💾 Votre progression est enregistrée sur cet appareil : vous pourrez reprendre la partie lors d'une prochaine séance en resaisissant les mêmes initiales.</p>
+    ${btn('🚀 Lancer la mission !','startGame()','teal','full lg')}
+  </div></div>`;
+}
+function rChip(i){const e=document.getElementById('chip'+i);if(!e)return;const fn=(F['fn'+i]||'').slice(0,2),ln=(F['ln'+i]||'').slice(0,2);e.innerHTML=fn&&ln?`<span class="chip">${fn}-${ln}</span>`:'<span style="color:#DDD;font-weight:800">--</span>';}
+function startGame(){
+  const name=(document.getElementById('gn')||{}).value||F.gn||'';
+  if(!name.trim()){const e=document.getElementById('ge');if(e)e.textContent="Entrez le nom de l'équipe";return;}
+  const parts=[];
+  for(let i=0;i<2;i++){
+    const fn=(F['fn'+i]||'').toUpperCase().slice(0,2);
+    const ln=(F['ln'+i]||'').toUpperCase().slice(0,2);
+    if(!fn||!ln){const e=document.getElementById('ge');if(e)e.textContent='Remplissez les deux candidats';return;}
+    parts.push({fn,ln});
+  }
+  const key=teamKey(parts[0].fn,parts[0].ln,parts[1].fn,parts[1].ln);
+  const existing=loadProgress(key);
+  if(existing){
+    F._pendingName=name.trim();F._pendingParts=parts;F._pendingKey=key;
+    go('resume');
+    return;
+  }
+  actuallyStartFresh(name.trim(),parts,key);
+}
+function actuallyStartFresh(name,parts,key){
+  S.sh=shuf(WW);S.wordFor={m1:S.sh[0],m2:S.sh[1],m3:S.sh[2],m4:S.sh[3],m5:S.sh[4]};S.rv=[];S.res={};S.wr=[];S.pts=0;
+  S.g={n:name,p:parts};S.t0=Date.now();S.t1=null;
+  S.att={m1:1,m2:1,m3:1,m4:1};S.finalAtt=1;
+  {const shp=shuf(POOL1);S.sets1=[shp.slice(0,10),shp.slice(10,20),shp.slice(20,30)];}
+  {const shp3=shuf(POOL3);S.sets3=[shp3.slice(0,10),shp3.slice(10,20),shp3.slice(20,30)];}
+  S.m5={text:''};
+  S._teamKey=key;
+  F={};
+  go('m1i');
+  saveProgress();
+}
+function vResume(){
+  const data=loadProgress(F._pendingKey);
+  if(!data){go('grp');return;}
+  const when=new Date(data.savedAt).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="card fadein" style="max-width:460px;width:100%;border-top:4px solid var(--teal)">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:2.5rem">💾</div>
+      <h2 class="pop" style="color:var(--teal);font-size:1.4rem;margin-top:6px">Sauvegarde trouvée</h2>
+      <p style="color:#888;font-size:.85rem;margin-top:4px">Une partie précédente existe pour ce binôme sur cet appareil.</p>
+    </div>
+    <div style="background:var(--tl);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:.87rem">
+      <div><strong>Équipe :</strong> ${data.g.n}</div>
+      <div><strong>Score actuel :</strong> ${data.pts} pts</div>
+      <div><strong>Dernière sauvegarde :</strong> ${when}</div>
+    </div>
+    ${btn('▶️ Reprendre la partie','resumeGame()','teal','full lg')}
+    <div style="margin-top:10px">${btn('🔄 Recommencer à zéro (efface la sauvegarde)','restartFresh()','gray','full sm')}</div>
+  </div></div>`;
+}
+function resumeGame(){
+  const data=loadProgress(F._pendingKey);
+  if(!data){go('grp');return;}
+  Object.assign(S,data);
+  S._teamKey=F._pendingKey;
+  F={};
+  const safe=['m1i','m2i','m3i','m4i','m5i','m1d','m2d','m3d','m4d','m5d','fin','vic','rep'];
+  go(safe.includes(data.scr)?data.scr:'m1i');
+}
+function restartFresh(){
+  const key=F._pendingKey,name=F._pendingName,parts=F._pendingParts;
+  clearProgress(key);
+  actuallyStartFresh(name,parts,key);
+}
+
+/* ═══════════════════════════ WRITTEN EXERCISES (QCM / VF / MATCH) ═══════════════════════════ */
+function startWritten(mission,kind){
+  S.att[mission]=1;
+  goWrittenAttempt(mission,kind,0);
+}
+function goWrittenAttempt(mission,kind,attIdx,banner){
+  if(kind==='qcm'){
+    const qs=buildQCMSet(S.sets1[attIdx],POOL1);
+    go('wex',{mission,kind,qs,cur:0,ans:{},done:false,_banner:banner});
+  }else if(kind==='vf'){
+    const set=M2SETS[attIdx];
+    go('wex',{mission,kind,qs:set.vf,text:set.text,title:set.title,cur:0,ans:{},done:false,_banner:banner});
+  }else if(kind==='match3'){
+    const ps=S.sets3[attIdx];
+    go('wex',{mission,kind,ps,sh:shuf(ps.map((_,i)=>i)),sel:null,mt:{},done:false,_banner:banner});
+  }
+}
+function resolveWritten(mission,kind,score,total,wrongItems){
+  const att=S.att[mission];
+  let passed,ptsDelta;
+  if(att===1){passed=score>=Math.ceil(total*0.8);ptsDelta=passed?50:-10;}
+  else if(att===2){passed=score>=Math.ceil(total*0.7);ptsDelta=passed?30:-15;}
+  else{passed=score>=Math.ceil(total*0.5);ptsDelta=Math.round(score/total*20);}
+  S.pts=S.pts+ptsDelta;
+  S.res[mission+'-t'+att]={score,total,success:passed,pts:ptsDelta};
+  if(!passed)S.wr.push(...wrongItems);
+  if(passed||att===3){
+    goMissionDone(mission);
+  }else{
+    S.att[mission]=att+1;
+    goWrittenAttempt(mission,kind,att);
+  }
+}
+function goMissionDone(mission){
+  if(mission==='m1')go('m1d');
+  else if(mission==='m2')go('m2d');
+  else if(mission==='m3')go('m3d');
+  else if(mission==='m4')go('m4d');
+  saveProgress();
+}
+
+/* ── QCM renderer ── */
+function vQCM(){
+  const{qs,cur=0,ans={},done=false}=E;
+  if(!qs)return'';
+  const q=qs[cur];const L='ABCD';const CC=['var(--teal)','var(--coral)','var(--amber)','#2F4876'];
+  const dots=qs.map((_,i)=>{const c=done?(ans[i]===qs[i].c?'var(--green)':'var(--red)'):(ans[i]!=null?'var(--teal)':'#DDD');return`<div onclick="E.cur=${i};render()" style="width:9px;height:9px;border-radius:50%;background:${c};cursor:pointer;display:inline-block;margin:2px"></div>`;}).join('');
+  const opts=q.o.map((opt,oi)=>{
+    let bc='#E8E8E8',bg='#fff';
+    if(ans[cur]===oi){bc='var(--teal)';bg='#E9EDF6';}
+    if(done&&oi===q.c){bc='var(--green)';bg='#EDF7EE';}
+    if(done&&ans[cur]===oi&&oi!==q.c){bc='var(--red)';bg='#FFEBEE';}
+    const lbg=ans[cur]===oi?CC[oi]:'#F0F0F0',lc=ans[cur]===oi?'#fff':'#999';
+    const mk=done?(oi===q.c?' ✓':(ans[cur]===oi?' ✗':'')):'';
+    return`<div class="opt ${ans[cur]===oi?'sel':''} ${done&&oi===q.c?'right':''} ${done&&ans[cur]===oi&&oi!==q.c?'wrong':''}" onclick="${done?'':(`E.ans[${cur}]=${oi};render()`)}" style="border-color:${bc};background:${bg}">
+      <div class="let" style="background:${lbg};color:${lc}">${L[oi]}</div>
+      <span style="flex:1">${opt}</span><span style="font-weight:800;color:${done&&oi===q.c?'var(--green)':'var(--red)'}">${mk}</span>
+    </div>`;
+  }).join('');
+  const allA=Object.keys(ans).length===qs.length;
+  const score=qs.filter((_,i)=>ans[i]===qs[i].c).length;
+  const bot=done
+    ?`<div style="display:flex;gap:8px;width:100%;margin-top:4px"><div class="ok" style="flex:1;margin:0">${score}/${qs.length} bonnes réponses</div>${btn('Continuer →','wexDone()','coral')}</div>`
+    :(allA?btn('✅ Valider mes réponses','E.done=true;render()','teal'):`<small style="color:#CCC;font-size:.78rem">${Object.keys(ans).length}/${qs.length} répondues</small>`);
+  return`<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+      <span style="color:#AAA;font-size:.8rem;font-weight:700">Question ${cur+1} / ${qs.length}</span><div>${dots}</div>
+    </div>
+    <div style="background:var(--tl);border-radius:11px;padding:13px;margin-bottom:12px;font-weight:600;font-size:.9rem;line-height:1.5;color:#333">${q.q}</div>
+    ${opts}
+    <div style="display:flex;gap:8px;margin-top:12px;justify-content:space-between;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:6px">
+        ${cur>0?btn('← Préc.',`E.cur=${cur-1};render()`,'gray','sm'):''}
+        ${cur<qs.length-1?btn('Suiv. →',`E.cur=${cur+1};render()`,'teal','sm'):''}
+      </div>${bot}
+    </div>
+  </div>`;
+}
+/* ── V/F renderer ── */
+function vVF(){
+  const{qs,text,title,ans={},done=false}=E;if(!qs)return'';
+  const score=qs.filter((q,i)=>ans[i]===q.a).length;
+  const rows=qs.map((q,i)=>{
+    const bg=done?(ans[i]===q.a?'#EDF7EE':'#FFEBEE'):'#fff';
+    const bc=done?(ans[i]===q.a?'var(--green)':'var(--red)'):'#E8E8E8';
+    return`<div class="vfr" style="background:${bg};border-color:${bc}">
+      <span style="width:21px;height:21px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;flex-shrink:0">${i+1}</span>
+      <span style="flex:1;font-weight:600;font-size:.86rem;line-height:1.4">${q.s}</span>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button class="tvf" onclick="${done?'':(`E.ans[${i}]=true;render()`)}" style="border-color:var(--green);color:${ans[i]===true?'#fff':'var(--green)'};background:${ans[i]===true?'var(--green)':'#fff'}">VRAI</button>
+        <button class="tvf" onclick="${done?'':(`E.ans[${i}]=false;render()`)}" style="border-color:var(--red);color:${ans[i]===false?'#fff':'var(--red)'};background:${ans[i]===false?'var(--red)':'#fff'}">FAUX</button>
+      </div>
+      ${done?`<span style="font-weight:800;color:${ans[i]===q.a?'var(--green)':'var(--red)'}">${ans[i]===q.a?'✓':'✗'}</span>`:''}
+    </div>`;
+  }).join('');
+  const allA=Object.keys(ans).length===qs.length;
+  const bot=done
+    ?`<div style="display:flex;gap:8px;width:100%"><div class="ok" style="flex:1;margin:0">${score}/${qs.length} bonnes réponses</div>${btn('Continuer →','wexDone()','coral')}</div>`
+    :btn('✅ Valider',`E.done=true;render()`,'teal','',!allA);
+  return`<div class="rtxt"><strong style="color:var(--teal2);font-size:.8rem">📄 ${title}</strong><br><br>${text.replace(/\n\n/g,'<br><br>')}</div>${rows}<div style="margin-top:12px;display:flex;justify-content:flex-end">${bot}</div>`;
+}
+/* ── Matching renderer (Mission 3 — FR term / EN translation) ── */
+function vMatch(){
+  const{ps,sh,sel,mt={},done=false}=E;if(!ps)return'';
+  const used=Object.values(mt);
+  const words=ps.map((p,i)=>{
+    const isM=mt[i]!=null,ok=done&&mt[i]===i,ko=done&&isM&&mt[i]!==i;
+    return`<div class="mi${sel===i?' msel':''}${isM&&!done?' mu':''}${ok?' mok':''}${ko?' mko':''}" onclick="${done||isM?'':(`selW(${i})`)}">
+      <strong style="flex:1">${p.w}</strong>
+      ${isM&&!done?'<span style="color:var(--coral);font-size:.72rem">✓</span>':''}
+      ${ok?'<span style="color:var(--green)">✓</span>':''}${ko?'<span style="color:var(--red)">✗</span>':''}
+    </div>`;
+  }).join('');
+  const defs=sh.map(orig=>{
+    const isU=used.includes(orig);
+    const mKey=Object.keys(mt).find(k=>mt[k]===orig);
+    const ok=done&&mKey!=null&&Number(mKey)===orig;
+    const ko=done&&isU&&!ok;
+    return`<div class="mi${isU&&!done?' mu':''}${ok?' mok':''}${ko?' mko':''}" onclick="${isU?'':(`selD(${orig})`)}">${ps[orig].d}</div>`;
+  }).join('');
+  const allM=Object.keys(mt).length===ps.length;
+  const score=ps.filter((_,i)=>mt[i]===i).length;
+  const bot=done
+    ?`<div style="display:flex;gap:8px;width:100%"><div class="ok" style="flex:1;margin:0">${score}/${ps.length} bonnes réponses</div>${btn('Continuer →','wexDone()','coral')}</div>`
+    :(allM?btn('✅ Valider','E.done=true;render()','teal'):`<small style="color:#CCC;font-size:.78rem">${Object.keys(mt).length}/${ps.length} associés</small>`);
+  return`<div class="hint" style="margin-bottom:12px">⚠️ Aucun retour en arrière possible : lisez bien avant de valider chaque association !</div><p style="color:#AAA;font-size:.8rem;margin-bottom:10px;font-weight:700">① Cliquez un terme français → ② Cliquez sa traduction anglaise</p>
+  <div class="mg"><div><div style="font-weight:800;color:var(--coral);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Termes français</div>${words}</div>
+  <div><div style="font-weight:800;color:var(--amber);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Traductions anglaises</div>${defs}</div></div>
+  <div style="margin-top:13px;display:flex;justify-content:flex-end">${bot}</div>`;
+}
+function selW(i){if(E.done||E.mt[i]!=null)return;E.sel=E.sel===i?null:i;render();}
+function selD(orig){if(E.done||Object.values(E.mt||{}).includes(orig)||E.sel==null)return;if(!E.mt)E.mt={};E.mt[E.sel]=orig;E.sel=null;render();}
+
+function wexDone(){
+  const{mission,kind,qs,ps,ans={},mt={}}=E;
+  if(kind==='qcm'){
+    const score=qs.filter((_,i)=>ans[i]===qs[i].c).length;
+    const wrong=qs.flatMap((q,i)=>ans[i]!==q.c?[{level:'M1',question:q.q,given:ans[i]!=null?q.o[ans[i]]:'—',correct:q.o[q.c]}]:[]);
+    resolveWritten(mission,kind,score,qs.length,wrong);
+  }else if(kind==='vf'){
+    const score=qs.filter((q,i)=>ans[i]===q.a).length;
+    const wrong=qs.flatMap((q,i)=>ans[i]!==q.a?[{level:'M2',question:q.s,given:ans[i]?'VRAI':'FAUX',correct:q.a?'VRAI':'FAUX'}]:[]);
+    resolveWritten(mission,kind,score,qs.length,wrong);
+  }else if(kind==='match3'){
+    const score=ps.filter((_,i)=>mt[i]===i).length;
+    const wrong=ps.flatMap((p,i)=>mt[i]!==i?[{level:'M3',question:`Match: ${p.w}`,given:mt[i]!=null?ps[mt[i]]?.d:'—',correct:p.d}]:[]);
+    resolveWritten(mission,kind,score,ps.length,wrong);
+  }
+}
+
+/* ═══════════════════════════ MISSION 4 — THE INTERVIEW (role-based oral) ═══════════════════════════ */
+function pickRoles(){
+  /* Team is always exactly 2 players — randomly decide who plays Role A vs Role B this attempt */
+  const idxs=[0,1];
+  if(Math.random()<0.5)return{a:0,b:1};
+  return{a:1,b:0};
+}
+function startOral(mission){
+  S.att[mission]=1;
+  goOralAttempt(mission,0);
+}
+function goOralAttempt(mission,attIdx,banner){
+  const content=ROLES[attIdx];
+  const roles=pickRoles();
+  go('oex',{mission,attIdx,content,step:'card',roles,_banner:banner});
+}
+function resolveOral(mission,grade){
+  const att=S.att[mission];
+  let passed,ptsDelta;
+  if(att===1){passed=grade>=9;ptsDelta=passed?50:-10;}
+  else if(att===2){passed=grade>=8;ptsDelta=passed?30:-15;}
+  else{passed=grade>=8;ptsDelta=grade*2;}
+  S.pts=S.pts+ptsDelta;
+  S.res[mission+'-t'+att]={grade,success:passed,pts:ptsDelta};
+  if(passed||att===3){
+    go('m4d');
+    saveProgress();
+  }else{
+    S.att[mission]=att+1;
+    goOralAttempt(mission,att);
+  }
+}
+function vOralRoles(){
+  const{content,step,roles}=E;
+  const nameA=`${S.g.p[roles.a].fn}-${S.g.p[roles.a].ln}`;
+  const nameB=`${S.g.p[roles.b].fn}-${S.g.p[roles.b].ln}`;
+  let body='';
+  if(step==='card'){
+    body=`<div class="ok" style="margin-bottom:14px">🎲 Rôles tirés au sort — <strong>${nameA}</strong> : Recruteur (Rôle A) • <strong>${nameB}</strong> : Candidat (Rôle B)</div>
+    <div class="rolecard roleA"><div class="slbl">🧑‍💼 ${content.a.label} — ${nameA}</div><div class="sval">${content.a.w}</div><div class="hint">${content.a.h}</div></div>
+    <div class="rolecard roleB"><div class="slbl">🙋 ${content.b.label} — ${nameB}</div><div class="sval">${content.b.w}</div><div class="hint">${content.b.h}</div></div>
+    <div style="text-align:center;margin-top:6px"><p style="color:#888;font-size:.86rem;margin-bottom:10px">Chaque élève lit SEULEMENT sa propre fiche, prépare des mots-clés (max 8), puis vous jouez la scène en anglais devant le professeur.</p>${btn('🎤 Nous sommes prêts',"E.step='presenting';render()",'teal','lg')}</div>`;
+  } else if(step==='presenting'){
+    body=`<div style="background:linear-gradient(135deg,var(--tl),var(--cl));border:2px solid var(--teal);border-radius:14px;padding:20px;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">🎤</div>
+      <p style="font-weight:700;color:var(--teal);margin-bottom:14px;font-size:.95rem">${nameA} (Recruteur) et ${nameB} (Candidat) jouent la scène en anglais…</p>
+      <p style="color:#888;font-size:.82rem;margin-bottom:16px">Une fois la scène terminée, le professeur annonce une note à l'oral pour le binôme. Saisissez-la ci-dessous.</p>
+      ${btn('✍️ Saisir la note',"E.step='grade';render()",'coral','lg')}
+    </div>`;
+  } else if(step==='grade'){
+    body=`<div style="background:var(--cl);border:2px solid var(--coral);border-radius:14px;padding:22px;text-align:center">
+      <div style="font-size:2.2rem;margin-bottom:8px">🏆</div>
+      <h3 class="pop" style="color:var(--coral);margin-bottom:5px">Note orale</h3>
+      <p style="color:#555;font-size:.88rem;margin-bottom:16px">Saisissez la note sur 10 annoncée par le professeur pour ${nameA} & ${nameB}</p>
+      <input id="gval" type="number" min="0" max="10" placeholder="Note / 10" style="text-align:center;font-size:1.2rem;font-weight:800;margin-bottom:10px">
+      <div id="gerr" style="color:var(--red);font-weight:700;font-size:.82rem;min-height:16px;margin-bottom:8px"></div>
+      ${btn('✅ Valider la note','submitGrade()','coral','full lg')}
+    </div>`;
+  }
+  return`<div class="card fadein">${E._banner||''}<div style="text-align:center;margin-bottom:16px">
+    <div style="font-size:2rem">${content.e}</div>
+    <h3 class="pop" style="color:var(--coral);font-size:1.25rem;margin-top:4px">${content.t}</h3>
+  </div>${body}</div>`;
+}
+function submitGrade(){
+  const raw=(document.getElementById('gval')||{}).value;
+  const g=Number(raw);
+  if(raw===''||isNaN(g)||g<0||g>10){const e=document.getElementById('gerr');if(e)e.textContent='Entrez une note entre 0 et 10';return;}
+  resolveOral(E.mission,g);
+}
+
+/* ═══════════════════════════ MISSION 5 — THE VERDICT (written) ═══════════════════════════ */
+function m5Points(n){
+  let p;
+  if(n<20)p=-20;
+  else if(n<40)p=-10;
+  else if(n<60)p=-5;
+  else if(n<70)p=5;
+  else p=20;
+  if(n>=100)p+=15;
+  return p;
+}
+function vM5(){
+  const n=wc(S.m5.text||'');
+  const pts=m5Points(n);
+  return `<div class="card fadein" style="border-top:4px solid var(--coral)">
+    <div style="text-align:center;margin-bottom:16px"><div style="font-size:2.6rem">✍️</div>
+      <h2 class="pop" style="color:var(--coral);font-size:1.5rem;margin-top:6px">Mission 5 — The Verdict</h2>
+    </div>
+    <div class="sit" style="margin-bottom:14px">
+      <div class="slbl">📍 Situation</div><div class="sval">${M5BRIEF.ctx}</div>
+      <div class="slbl">📋 Contexte</div><div class="sval">${M5BRIEF.situation}</div>
+    </div>
+    <div class="hint" style="margin-bottom:10px">${M5BRIEF.ask}</div>
+    <div style="background:#F8FAFD;border-radius:11px;padding:11px 14px;margin-bottom:14px;font-size:.78rem;color:#555;line-height:1.7">
+      📊 Barème : &lt;20 mots −20 pts • 20-39 −10 pts • 40-59 −5 pts • 60-69 +5 pts • 70-99 +20 pts • 100 mots et + bonus +35 pts
+    </div>
+    <textarea id="m5ta" rows="9" placeholder="Write your final statement here in ENGLISH..." oninput="onM5Input(this.value)">${S.m5.text||''}</textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <span id="m5wc" style="font-weight:700;font-size:.85rem;color:#555">${n} mot${n>1?'s':''}</span>
+      <span id="m5ptspreview" style="font-weight:800;font-size:.85rem;color:${pts>=0?'var(--green)':'var(--red)'}">${pts>=0?'+':''}${pts} pts</span>
+    </div>
+    <div class="hint" style="margin-top:14px">👩‍🏫 Vous pouvez arrêter votre rédaction quand vous le souhaitez (70 mots recommandés). La professeure lira aussi votre texte et vous attribuera une note à part, en plus des points automatiques ci-dessus.</div>
+    <div style="text-align:center;margin-top:16px"><button id="m5btn" class="btn btn-coral lg" onclick="validateM5()">📥 Valider et soumettre notre verdict</button></div>
+  </div>`;
+}
+function onM5Input(v){
+  S.m5.text=v;
+  const n=wc(v);
+  const pts=m5Points(n);
+  const wcEl=document.getElementById('m5wc');
+  if(wcEl)wcEl.textContent=`${n} mot${n>1?'s':''}`;
+  const ptsEl=document.getElementById('m5ptspreview');
+  if(ptsEl){ptsEl.textContent=`${pts>=0?'+':''}${pts} pts`;ptsEl.style.color=pts>=0?'var(--green)':'var(--red)';}
+}
+function validateM5(){
+  const n=wc(S.m5.text||'');
+  const pts=m5Points(n);
+  S.pts=S.pts+pts;
+  S.res['m5-t1']={report:S.m5.text,words:n,pts:pts};
+  go('m5d');
+  saveProgress();
+}
+
+/* ═══════════════════════════ FINAL CODE ═══════════════════════════ */
+function vFinal(){
+  const chips=S.rv.map(w=>`<div style="background:linear-gradient(135deg,var(--teal),var(--coral));color:#fff;padding:7px 18px;border-radius:50px;font-family:'Poppins';font-weight:900;font-size:1.05rem;display:inline-block;margin:3px">${w}</div>`).join('');
+  return`<div class="card fadein" style="border-top:4px solid var(--teal)">
+    <div style="text-align:center;margin-bottom:22px"><div style="font-size:3rem">🔐</div>
+      <h2 class="pop" style="color:var(--teal);font-size:1.75rem;margin-top:7px">Master Code</h2>
+      <p style="color:#888;font-size:.88rem;margin-top:4px">Recomposez le verdict final avec vos 5 fragments</p>
+      <span style="background:var(--am);color:var(--amber);padding:4px 13px;border-radius:50px;font-weight:800;font-size:.78rem;display:inline-block;margin-top:8px">Tentative ${S.finalAtt}/3</span>
+    </div>
+    <div style="background:linear-gradient(135deg,var(--tl),var(--cl));border-radius:14px;padding:18px;margin-bottom:20px">
+      <div class="pop" style="color:var(--teal);margin-bottom:10px;font-size:.9rem">🧩 Vos fragments :</div>
+      <div style="margin-bottom:8px">${chips}</div>
+      <p style="color:#AAA;font-size:.78rem">⚠️ Ils sont dans le désordre — trouvez la bonne phrase ! +10 pts si trouvée, −10 pts si non trouvée après 3 tentatives.</p>
+    </div>
+    <label style="font-weight:700;display:block;margin-bottom:7px;font-size:.88rem;color:#444">✍️ Entrez la phrase complète :</label>
+    <input id="fc" type="text" placeholder="_ _ _ _ _" style="font-size:1rem;text-align:center;letter-spacing:.04em;margin-bottom:9px" onkeydown="if(event.key==='Enter')checkFinal()">
+    <div id="fe" style="color:var(--red);font-weight:700;font-size:.83rem;min-height:17px;margin-bottom:10px"></div>
+    <div style="text-align:center">${btn("🔓 Découvrir le verdict !",'checkFinal()','teal','lg')}</div>
+  </div>`;
+}
+function checkFinal(){
+  const v=((document.getElementById('fc')||{}).value||'').trim().toUpperCase().replace(/\s+/g,' ');
+  if(v==='YOU HAVE GOT THE JOB'){
+    S.pts=S.pts+10;
+    S.res['final']={success:true,pts:10,attempts:S.finalAtt};
+    S.t1=Date.now();go('vic');
+    saveProgress();
+    return;
+  }
+  if(S.finalAtt>=3){
+    S.pts=S.pts-10;
+    S.res['final']={success:false,pts:-10,attempts:3};
+    S.t1=Date.now();go('vic');
+    saveProgress();
+    return;
+  }
+  S.finalAtt++;
+  const e=document.getElementById('fe');
+  if(e)e.textContent=`❌ Code incorrect (tentative ${S.finalAtt-1}/3). Réarrangez vos ${S.rv.length} fragments !`;
+}
+
+/* ═══════════════════════════ VICTORY ═══════════════════════════ */
+function vVictory(){
+  const dur=ftm(S.t0,S.t1);
+  const r=starRating(S.pts,350);
+  const fr=S.res['final'];
+  const parts=S.g.p.map(p=>`<span class="chip">${p.fn}-${p.ln}</span>`).join(' ');
+  return`<div class="glass" style="background:linear-gradient(135deg,var(--teal),var(--coral));border-radius:20px;padding:32px;text-align:center;color:#fff;margin-bottom:18px">
+    <div style="font-size:3rem;margin-bottom:8px">💼🏆🎉</div>
+    <h1 class="pop" style="font-size:2rem;margin-bottom:7px">${fr&&fr.success?'Vous avez le poste !':'Le processus de recrutement est terminé !'}</h1>
+    <p style="opacity:.9;margin-bottom:4px">Merci d'avoir postulé pour Guardline Security ! 🛡️</p>
+    <div style="font-family:'Poppins';font-size:1.1rem;margin-top:14px;background:rgba(255,255,255,.18);padding:10px 22px;border-radius:50px;display:inline-block">
+      YOU HAVE GOT THE JOB ${fr&&fr.success?'✓':''}
+    </div>
+  </div>
+  <div class="card"><div class="pop" style="color:var(--teal);margin-bottom:14px">📊 Résumé de mission</div>
+    <div style="text-align:center;margin-bottom:14px">${stars(r.s)} <span style="font-weight:700;color:var(--coral);margin-left:6px">${r.msg}</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:var(--tl);padding:14px;border-radius:13px;text-align:center"><div class="pop" style="font-size:2rem;color:var(--teal)">${S.pts}</div><div style="color:#888;font-size:.8rem">Points</div></div>
+      <div style="background:var(--cl);padding:14px;border-radius:13px;text-align:center"><div class="pop" style="font-size:1.5rem;color:var(--coral)">${dur}</div><div style="color:#888;font-size:.8rem">Durée</div></div>
+    </div>
+    <div style="margin-bottom:6px"><div style="font-weight:700;font-size:.88rem;margin-bottom:6px">👥 Équipe : <span style="color:var(--teal)">${S.g.n}</span></div><div>${parts}</div></div>
+    ${btn('📥 Voir le rapport final',"go('rep')",'coral','full lg')}
+  </div>`;
+}
+
+/* ═══════════════════════════ REPORT ═══════════════════════════ */
+function vReport(){
+  const dur=ftm(S.t0,S.t1);
+  const MISSIONS=[
+    {key:'m1',icon:'📋',title:'Mission 1 — The Job Ad',level:'M1'},
+    {key:'m2',icon:'📖',title:"Mission 2 — The Candidate's File",level:'M2'},
+    {key:'m3',icon:'🔤',title:'Mission 3 — HR Terminology',level:'M3'},
+    {key:'m4',icon:'🎤',title:'Mission 4 — The Interview',level:null},
+    {key:'m5',icon:'✍️',title:'Mission 5 — The Verdict',level:null}
+  ];
+  const missionBlocks=MISSIONS.map(m=>{
+    const attempts=Object.entries(S.res).filter(([k])=>k.startsWith(m.key+'-t')).sort((a,b)=>a[0].localeCompare(b[0]));
+    if(attempts.length===0)return'';
+    if(m.key==='m5'){
+      const v=attempts[0][1];
+      const bg=v.pts>=0?'#EDF7EE':'#FFEBEE';
+      const bc=v.pts>=0?'var(--green)':'var(--red)';
+      return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>
+        <div style="padding:10px 13px;border-radius:10px;background:${bg};border-left:4px solid ${bc};margin-bottom:10px;font-size:.86rem">
+          <strong>Verdict soumis</strong> — ${v.words} mots <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span>
+        </div>
+        <p style="white-space:pre-wrap;font-size:.87rem;line-height:1.7;color:#333;background:#F8FAFD;padding:12px;border-radius:10px">${(v.report||'').replace(/</g,'&lt;')}</p>
+        <p style="color:#AAA;font-size:.78rem;margin-top:8px">👩‍🏫 Ce texte sera également corrigé et noté par la professeure.</p>
+      </div>`;
+    }
+    if(m.key==='m4'){
+      const rows=attempts.map(([k,v])=>{
+        const attN=k.split('-t')[1];
+        const bg=v.success?'#EDF7EE':'#FFEBEE';
+        const bc=v.success?'var(--green)':'var(--red)';
+        const lbl=v.success?'✓ Réussi':'';
+        return `<div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:6px;font-size:.86rem">
+          <strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} — ${v.grade}/10 <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span>
+        </div>`;
+      }).join('');
+      return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}<p style="color:#AAA;font-size:.78rem;margin-top:8px">🎭 Rôles tirés au sort à chaque tentative — Recruteur / Candidat.</p></div>`;
+    }
+    const rows=attempts.map(([k,v])=>{
+      const attN=k.split('-t')[1];
+      const bg=v.success?'#EDF7EE':'#FFEBEE';
+      const bc=v.success?'var(--green)':'var(--red)';
+      const lbl=v.success?'✓ Réussi':'';
+      return `<div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:6px;font-size:.86rem">
+        <strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} — ${v.score}/${v.total} <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span>
+      </div>`;
+    }).join('');
+    const corrections=S.wr.filter(w=>w.level===m.level);
+    const correctionsHtml=corrections.length
+      ?`<div style="margin-top:10px"><div style="font-weight:800;color:var(--red);font-size:.8rem;margin-bottom:6px">Corrections</div>${corrections.map(w=>`<div style="background:#fff;border:1px solid #E3D9D9;border-radius:9px;padding:11px;margin-bottom:8px"><div style="font-weight:700;font-size:.84rem;color:#333">${w.question}</div><div style="color:var(--red);font-size:.8rem;margin-top:3px">✗ Réponse donnée : ${w.given||'—'}</div><div style="color:var(--green);font-size:.8rem">✓ Réponse correcte : ${w.correct}</div></div>`).join('')}</div>`
+      :`<div class="ok" style="margin-top:8px;text-align:center;font-size:.82rem">🏆 Aucune erreur</div>`;
+    return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}${correctionsHtml}</div>`;
+  }).join('');
+  const fr=S.res['final'];
+  const finalBlock=fr?(()=>{
+    const bg=fr.success?'#EDF7EE':'#FFEBEE';
+    const bc=fr.success?'var(--green)':'var(--red)';
+    const lbl=fr.success?'✓ Trouvé':'';
+    return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">🔐 Master Code</div>
+      <div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};font-size:.86rem">
+        <strong>${fr.attempts} tentative${fr.attempts>1?'s':''}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} <span style="float:right;color:${bc};font-weight:700">${fr.pts>=0?'+':''}${fr.pts} pts</span>
+      </div>
+    </div>`;
+  })():'';
+  const parts=S.g.p.map(p=>`<span class="chip">${p.fn}-${p.ln}</span>`).join(' ');
+  return`<div id="rep" style="max-width:780px;margin:0 auto;padding:20px;padding-bottom:40px">
+  <div class="noprint" style="margin-bottom:14px;display:flex;gap:9px;flex-wrap:wrap">
+    ${btn('← Retour',"go(S._returnTo||'vic',S._returnE||{})",'gray','sm')}
+    ${btn('🖨️ Imprimer / Enregistrer PDF','window.print()','teal','sm')}
+    ${btn('📝 Télécharger en Word','downloadWord()','coral','sm')}
+  </div>
+  <div class="glass" style="background:linear-gradient(135deg,var(--teal),var(--coral));border-radius:18px;padding:28px;text-align:center;color:#fff;margin-bottom:16px;print-color-adjust:exact;-webkit-print-color-adjust:exact">
+    <div class="pop" style="font-size:1.6rem;margin-bottom:4px">💼 Will I Get The Job?</div>
+    <div style="opacity:.85;font-size:.88rem">English Escape Game — CAP Agent de Sécurité</div>
+    <div style="opacity:.7;font-size:.78rem;margin-top:4px">${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+    <div class="card" style="text-align:center;border-top:3px solid var(--teal)"><div style="font-weight:800;font-size:1rem;color:var(--teal)">${S.g.n}</div><div style="color:#888;font-size:.78rem;margin-top:3px">Équipe</div><div style="margin-top:7px">${parts}</div></div>
+    <div class="card" style="text-align:center;border-top:3px solid var(--coral)"><div class="pop" style="font-size:1.9rem;color:var(--teal)">${S.pts}</div><div style="color:#888;font-size:.78rem">Points • ${dur}</div><div style="margin-top:6px">${stars(starRating(S.pts,350).s)}</div></div>
+  </div>
+  ${missionBlocks}
+  ${finalBlock}
+  <div style="text-align:center;color:#BBB;font-size:.76rem;margin-top:6px">Créé par C. Iemfre • Will I Get The Job? — English Escape Game CAP Agent de Sécurité</div>
+  </div>`;
+}
+
+/* ── Export the report as an editable Word (.doc) file — client-side, no external library. ── */
+function buildReportHTML(){
+  const styleTag=document.querySelector('style').outerHTML;
+  const repEl=document.getElementById('rep').cloneNode(true);
+  repEl.querySelectorAll('.noprint').forEach(el=>el.remove());
+  return `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>Rapport</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+${styleTag}
+</head><body>${repEl.outerHTML}</body></html>`;
+}
+function downloadWord(){
+  const html=buildReportHTML();
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`rapport-${(S.g.n||'equipe').replace(/[^a-zA-Z0-9]/g,'_')}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* ═══════════════════════════ RGPD (texte exact) ═══════════════════════════ */
+function vRGPD(){
+  return`<div style="min-height:100vh;padding:20px 18px 40px">
+  <div style="max-width:580px;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-top:8px">
+      <span style="color:#AAA;cursor:pointer;font-size:.83rem;font-weight:700" onclick="go('home')">← Retour</span>
+    </div>
+    <div class="glass" style="background:linear-gradient(135deg,var(--teal),var(--coral));border-radius:16px;padding:26px;text-align:center;color:#fff;margin-bottom:18px;print-color-adjust:exact;-webkit-print-color-adjust:exact">
+      <div style="font-size:2.4rem;margin-bottom:8px">🔒</div>
+      <h1 class="pop" style="font-size:1.5rem;margin-bottom:4px">Protection des données personnelles</h1>
+      <p style="opacity:.75;font-size:.82rem">Will I Get The Job? — English Escape Game</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--teal);margin-bottom:10px">
+      <p style="color:#333;font-size:.9rem;line-height:1.82">Cette application est un outil pédagogique développé pour un usage en classe.</p>
+    </div>
+    <div style="display:grid;gap:9px;margin-bottom:18px">
+      <div class="card" style="padding:15px 16px">
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Aucune donnée n'est transmise à un serveur externe : toutes les informations (identifiant, réponses, score) restent uniquement dans la mémoire de votre navigateur, le temps de la partie en cours.</p>
+      </div>
+      <div class="card" style="padding:15px 16px">
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Aucun cookie tiers, aucun traceur publicitaire, aucun appel à une API externe n'est utilisé.</p>
+      </div>
+      <div class="card" style="padding:15px 16px">
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Les seules données saisies sont : les deux premières lettres de votre prénom et de votre nom (utilisées uniquement pour générer un identifiant au format XX-YY, sans jamais collecter votre identité complète), ainsi que vos réponses aux exercices.</p>
+      </div>
+      <div class="card" style="padding:15px 16px">
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Votre progression (identifiant, réponses, score) est enregistrée localement dans la mémoire de stockage de votre navigateur (localStorage), sur cet appareil uniquement, afin de vous permettre de reprendre la partie lors d'une prochaine séance. Ces données ne sont jamais transmises à un serveur ni à un tiers. Vous pouvez les supprimer à tout moment en choisissant « Recommencer à zéro » sur l'écran d'identification, ou en effaçant les données de navigation de votre navigateur.</p>
+      </div>
+      <div class="card" style="padding:15px 16px">
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Le PDF ou le fichier Word généré est créé localement dans votre navigateur ; il n'est envoyé à personne automatiquement. C'est à vous de le transmettre à votre professeur.</p>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+/* ═══════════════════════════ ROUTER ═══════════════════════════ */
+function go(scr,ei={}){E=ei;S.scr=scr;render();window.scrollTo(0,0);}
+function render(){document.getElementById('app').innerHTML=view()+scoreBadge()+reportFab();}
+function view(){
+  const sc=S.scr;
+  if(sc==='home')return vHome();
+  if(sc==='rules')return vRules();
+  if(sc==='rgpd')return vRGPD();
+  if(sc==='tlg')return vLogin('Interface Professeur','tdb');
+  if(sc==='tdb')return vTeacher();
+  if(sc==='slg')return vLogin('Connexion Équipe','grp');
+  if(sc==='grp')return vGroup();
+  if(sc==='resume')return vResume();
+
+  const W=hdr;
+  /* Mission 1 — The Job Ad (QCM) */
+  if(sc==='m1i')return W(1)+`<div class="page">${lvlIntro('📋','Mission 1 — The Job Ad','Vocabulaire du recrutement','<p style="font-weight:700;margin-bottom:7px">A new job advertisement has just been published!</p><p style="font-size:.88rem;color:#555;line-height:1.7">Avant de postuler, prouvez que vous maîtrisez le vocabulaire essentiel du recrutement dans la sécurité. 10 questions. Seuil de réussite : ≥ 8/10. 3 tentatives possibles, aucun blocage.</p>',"startWritten('m1','qcm')",'teal')}</div>`;
+  if(sc==='wex'&&E.mission==='m1')return W(1)+`<div class="page">${E._banner||''}<div class="card card-teal"><div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span style="background:var(--teal);color:#fff;padding:3px 12px;border-radius:50px;font-weight:800;font-size:.8rem">Tentative ${S.att.m1}</span><strong style="font-size:.95rem">QCM — Vocabulaire du recrutement</strong></div>${vQCM()}</div></div>`;
+  if(sc==='m1d')return W(1)+`<div class="page">${indiceScreen('m1',"go('m2i')")}</div>`;
+
+  /* Mission 2 — The Candidate's File (VF) */
+  if(sc==='m2i')return W(2)+`<div class="page">${lvlIntro('📖',"Mission 2 — The Candidate's File",'Compréhension écrite','<p style="font-weight:700;margin-bottom:7px">A candidate\'s file has just arrived!</p><p style="font-size:.88rem;color:#555;line-height:1.7">Lisez le texte professionnel puis répondez aux 8 affirmations Vrai/Faux. Seuil : ≥ 80% à la 1ère tentative, ≥ 70% à la 2e. 3 tentatives possibles, aucun blocage.</p>',"startWritten('m2','vf')",'coral')}</div>`;
+  if(sc==='wex'&&E.mission==='m2')return W(2)+`<div class="page">${E._banner||''}<div class="card card-coral"><div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span style="background:var(--coral);color:#2B2005;padding:3px 12px;border-radius:50px;font-weight:800;font-size:.8rem">Tentative ${S.att.m2}</span><strong style="font-size:.95rem">Vrai / Faux</strong></div>${vVF()}</div></div>`;
+  if(sc==='m2d')return W(2)+`<div class="page">${indiceScreen('m2',"go('m3i')")}</div>`;
+
+  /* Mission 3 — HR Terminology (Matching FR/EN) */
+  if(sc==='m3i')return W(3)+`<div class="page">${lvlIntro('🔤','Mission 3 — HR Terminology','Traduction professionnelle','<p style="font-weight:700;margin-bottom:7px">The HR paperwork is scrambled!</p><p style="font-size:.88rem;color:#555;line-height:1.7">Associez chaque terme RH français à sa traduction anglaise exacte. Seuil : ≥ 8/10. 3 tentatives possibles, aucun blocage.</p><p style="color:var(--red);font-weight:700;font-size:.84rem;margin-top:8px">⚠️ Lisez bien tous les mots AVANT de commencer : une fois qu\'une association est validée, il est impossible de revenir en arrière ou de la corriger !</p>',"startWritten('m3','match3')",'amber')}</div>`;
+  if(sc==='wex'&&E.mission==='m3')return W(3)+`<div class="page">${E._banner||''}<div class="card card-amber"><div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span style="background:var(--amber);color:#fff;padding:3px 12px;border-radius:50px;font-weight:800;font-size:.8rem">Tentative ${S.att.m3}</span><strong style="font-size:.95rem">Traduction — Français / Anglais</strong></div>${vMatch()}</div></div>`;
+  if(sc==='m3d')return W(3)+`<div class="page">${indiceScreen('m3',"go('m4i')")}</div>`;
+
+  /* Mission 4 — The Interview (role-based oral) */
+  if(sc==='m4i')return W(4)+`<div class="page">${lvlIntro('🎤','Mission 4 — The Interview','Entretien d\'embauche à deux rôles','<p style="font-weight:700;margin-bottom:7px">It\'s interview time!</p><p style="font-size:.88rem;color:#555;line-height:1.7">Les rôles sont tirés au sort : un(e) élève joue le <strong>recruteur</strong> (Rôle A), l\'autre le <strong>candidat</strong> (Rôle B). Chacun lit sa propre fiche. <strong>Mots-clés seulement, 8 maximum par élève, aucune phrase apprise.</strong></p>',"startOral('m4')",'teal')}</div>`;
+  if(sc==='oex'&&E.mission==='m4')return W(4)+`<div class="page">${vOralRoles()}</div>`;
+  if(sc==='m4d')return W(4)+`<div class="page">${indiceScreen('m4',"go('m5i')")}</div>`;
+
+  /* Mission 5 — The Verdict (written) */
+  if(sc==='m5i')return W(5)+`<div class="page">${lvlIntro('✍️','Mission 5 — The Verdict','Compte rendu écrit final','<p style="font-weight:700;margin-bottom:7px">The panel is waiting for your final statement!</p><p style="font-size:.88rem;color:#555;line-height:1.7">Rédigez un texte de motivation en anglais pour convaincre le jury de vous embaucher. Vous pouvez arrêter votre rédaction quand vous le souhaitez : les points automatiques dépendent du nombre de mots (70 mots recommandés). La professeure lira aussi votre texte et vous attribuera une note à part.</p>',"go('m5w')",'coral')}</div>`;
+  if(sc==='m5w')return W(5)+`<div class="page">${vM5()}</div>`;
+  if(sc==='m5d')return W(5)+`<div class="page">${indiceScreen('m5',"go('fin')")}</div>`;
+
+  if(sc==='fin')return W(5)+`<div class="page">${vFinal()}</div>`;
+  if(sc==='vic')return W(5)+`<div class="page">${vVictory()}</div>`;
+  if(sc==='rep')return vReport();
+  return'<p>Écran inconnu</p>';
+}
+render();
+</script></body></html>
