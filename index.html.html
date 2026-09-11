@@ -316,14 +316,14 @@ function indiceScreen(mission,onNext){
   <div style="text-align:center;margin-top:10px">${btn('Mission suivante →',onNext,'coral','lg')}</div>`;
 }
 function scoreBadge(){
-  const hiddenScreens=['home','tlg','tdb','resume'];
+  const hiddenScreens=['home','tlg','tdb'];
   if(hiddenScreens.includes(S.scr))return'';
   return `<div class="score-fab noprint">⭐ ${S.pts} pts</div>`;
 }
 function reportFab(){
-  const hiddenScreens=['home','tlg','tdb','rules','slg','grp','resume','rep'];
+  const hiddenScreens=['home','tlg','tdb','rules','slg','grp','rep'];
   if(hiddenScreens.includes(S.scr)||!S.t0)return'';
-  return `<div class="rep-fab noprint">${btn('📥 Rapport',"S._returnTo=S.scr;S._returnE=E;go('rep')",'gray','sm')}</div>`;
+  return `<div class="rep-fab noprint">${btn('📥 PDF',"S._returnTo=S.scr;S._returnE=E;go('rep')",'gray','sm')}</div>`;
 }
 
 /* ═══════════════════════════ HOME ═══════════════════════════ */
@@ -420,7 +420,7 @@ function vLogin(title,next){
   </div></div>`;
 }
 function doLogin(next){
-  const v=(document.getElementById('lgc')||{}).value||'';
+  const v=((document.getElementById('lgc')||{}).value||'').trim();
   if(v.toUpperCase()===(next==='tdb'?S.tc:S.sc.toUpperCase()))go(next);
   else{const e=document.getElementById('lge');if(e)e.textContent='Code incorrect. Réessayez.';}
 }
@@ -447,21 +447,58 @@ function vTeacher(){
   </div>
   <div class="card card-coral"><div class="pop" style="color:var(--coral);margin-bottom:12px">🎓 Critères d'évaluation orale — Mission 4</div>
     <div style="background:var(--cl);padding:11px 13px;border-radius:10px;border:1px solid var(--coral2);font-size:.86rem"><strong style="color:var(--coral)">The Interview :</strong> <span style="color:#555">Question posée clairement par le Rôle A, réponse structurée et pertinente du Rôle B, mots-clés adaptés (pas de phrases apprises par cœur), attitude professionnelle des deux élèves.</span></div>
+  </div>
+  <div class="card card-teal"><div class="pop" style="color:var(--teal);margin-bottom:12px">🎭 Scénarios de l'entretien (Mission 4)</div>
+    <p style="color:#888;font-size:.82rem;margin-bottom:12px">Un scénario est tiré au sort à chaque tentative. Les rôles A/B sont eux aussi tirés au sort entre les 2 élèves.</p>
+    ${ROLES.map((r,i)=>`<div style="background:#F0F3FA;border-radius:11px;padding:13px 15px;margin-bottom:10px">
+      <div style="font-weight:800;color:var(--teal);font-size:.88rem;margin-bottom:8px">${r.e} Scénario ${i+1} — ${r.t}</div>
+      <div style="background:var(--tl);border-radius:9px;padding:9px 12px;margin-bottom:6px;font-size:.83rem"><strong style="color:var(--teal)">${r.a.label} :</strong> <span style="color:#444">${r.a.w}</span></div>
+      <div style="background:var(--cl);border-radius:9px;padding:9px 12px;font-size:.83rem"><strong style="color:var(--coral)">${r.b.label} :</strong> <span style="color:#444">${r.b.w}</span></div>
+    </div>`).join('')}
   </div></div></div>`;
 }
 
 /* ═══════════════════════════ TEAM SETUP (BINÔME FIXE — 2 JOUEURS) ═══════════════════════════ */
+function listSavedGames(){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.indexOf(SAVE_PREFIX)===0){
+        const key=k.slice(SAVE_PREFIX.length);
+        const data=loadProgress(key);
+        if(data)out.push({key,data});
+      }
+    }
+  }catch(e){/* storage unavailable */}
+  out.sort((a,b)=>(b.data.savedAt||0)-(a.data.savedAt||0));
+  return out;
+}
 function vGroup(){
+  const saves=listSavedGames();
+  const savesBlock=saves.length?`<div class="card fadein" style="max-width:530px;width:100%;border-top:4px solid var(--coral);margin-bottom:14px">
+    <div class="pop" style="color:var(--coral);font-size:1.05rem;margin-bottom:10px">💾 Reprendre ma partie</div>
+    <p style="color:#888;font-size:.8rem;margin-bottom:12px">Des parties sont enregistrées sur cet appareil :</p>
+    ${saves.map(s=>`<div style="display:flex;align-items:center;gap:8px;background:var(--tl);border-radius:11px;padding:10px 13px;margin-bottom:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <div style="font-weight:800;font-size:.87rem;color:var(--teal)">${s.data.g.n}</div>
+        <div style="color:#888;font-size:.76rem">${s.key.replace(/_/g,' • ')} — ${s.data.pts} pts</div>
+      </div>
+      ${btn('▶️ Reprendre',`resumeGameByKey('${s.key}')`,'teal','sm')}
+      ${btn('🗑️ Effacer',`confirmDeleteSave('${s.key}')`,'gray','sm')}
+    </div>`).join('')}
+  </div>`:'';
   const rows=[0,1].map(i=>`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;align-items:center">
     <input id="fn${i}" type="text" placeholder="JO" value="${F['fn'+i]||''}" oninput="F['fn${i}']=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,2);rChip(${i})" style="text-align:center;font-weight:800;font-family:monospace;letter-spacing:.12em">
     <input id="ln${i}" type="text" placeholder="SM" value="${F['ln'+i]||''}" oninput="F['ln${i}']=this.value.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,2);rChip(${i})" style="text-align:center;font-weight:800;font-family:monospace;letter-spacing:.12em">
     <div id="chip${i}" style="text-align:center">${F['fn'+i]&&F['ln'+i]?`<span class="chip">${F['fn'+i]}-${F['ln'+i]}</span>`:'<span style="color:#DDD;font-weight:800">--</span>'}</div>
   </div>`).join('');
-  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  return `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px">
+  ${savesBlock}
   <div class="card fadein" style="max-width:530px;width:100%;border-top:4px solid var(--teal)">
     <div style="text-align:center;margin-bottom:20px">
       <div style="font-size:2.5rem">💼</div>
-      <h2 class="pop" style="color:var(--teal);font-size:1.6rem;margin-top:6px">Identification binôme</h2>
+      <h2 class="pop" style="color:var(--teal);font-size:1.6rem;margin-top:6px">Nouvelle identification</h2>
       <p style="color:#888;font-size:.83rem;margin-top:3px">Vous jouez en binôme (2 candidats) — enregistrez votre équipe avant de commencer</p>
     </div>
     <label style="font-weight:700;display:block;margin-bottom:6px;font-size:.87rem;color:#444">🏷️ Nom de l'équipe</label>
@@ -472,11 +509,26 @@ function vGroup(){
     </div>
     ${rows}
     <div id="ge" style="color:var(--red);font-weight:700;font-size:.83rem;min-height:17px;margin-top:6px;margin-bottom:10px"></div>
-    <p style="color:#AAA;font-size:.76rem;text-align:center;margin-bottom:10px">💾 Votre progression est enregistrée sur cet appareil : vous pourrez reprendre la partie lors d'une prochaine séance en resaisissant les mêmes initiales.</p>
-    ${btn('🚀 Lancer la mission !','startGame()','teal','full lg')}
+    <p style="color:#AAA;font-size:.76rem;text-align:center;margin-bottom:10px">💾 Votre progression est enregistrée sur cet appareil : vous pourrez la reprendre lors d'une prochaine séance depuis cet écran.</p>
+    ${btn('🚀 Lancer une nouvelle mission !','startGame()','teal','full lg')}
   </div></div>`;
 }
 function rChip(i){const e=document.getElementById('chip'+i);if(!e)return;const fn=(F['fn'+i]||'').slice(0,2),ln=(F['ln'+i]||'').slice(0,2);e.innerHTML=fn&&ln?`<span class="chip">${fn}-${ln}</span>`:'<span style="color:#DDD;font-weight:800">--</span>';}
+function resumeGameByKey(key){
+  const data=loadProgress(key);
+  if(!data){go('grp');return;}
+  Object.assign(S,data);
+  S._teamKey=key;
+  F={};
+  const safe=['m1i','m2i','m3i','m4i','m5i','m1d','m2d','m3d','m4d','m5d','fin','vic','rep'];
+  go(safe.includes(data.scr)?data.scr:'m1i');
+}
+function confirmDeleteSave(key){
+  const ok=confirm('Effacer définitivement cette sauvegarde et recommencer à zéro pour cette équipe ?');
+  if(!ok)return;
+  clearProgress(key);
+  render();
+}
 function startGame(){
   const name=(document.getElementById('gn')||{}).value||F.gn||'';
   if(!name.trim()){const e=document.getElementById('ge');if(e)e.textContent="Entrez le nom de l'équipe";return;}
@@ -490,9 +542,9 @@ function startGame(){
   const key=teamKey(parts[0].fn,parts[0].ln,parts[1].fn,parts[1].ln);
   const existing=loadProgress(key);
   if(existing){
-    F._pendingName=name.trim();F._pendingParts=parts;F._pendingKey=key;
-    go('resume');
-    return;
+    const ok=confirm('Une sauvegarde existe déjà pour ce binôme. Utilisez plutôt le bouton « Reprendre » ci-dessus pour continuer cette partie.\n\nContinuer ici EFFACERA la progression précédente et repartira de zéro. Continuer ?');
+    if(!ok)return;
+    clearProgress(key);
   }
   actuallyStartFresh(name.trim(),parts,key);
 }
@@ -507,40 +559,6 @@ function actuallyStartFresh(name,parts,key){
   F={};
   go('m1i');
   saveProgress();
-}
-function vResume(){
-  const data=loadProgress(F._pendingKey);
-  if(!data){go('grp');return;}
-  const when=new Date(data.savedAt).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
-  <div class="card fadein" style="max-width:460px;width:100%;border-top:4px solid var(--teal)">
-    <div style="text-align:center;margin-bottom:18px">
-      <div style="font-size:2.5rem">💾</div>
-      <h2 class="pop" style="color:var(--teal);font-size:1.4rem;margin-top:6px">Sauvegarde trouvée</h2>
-      <p style="color:#888;font-size:.85rem;margin-top:4px">Une partie précédente existe pour ce binôme sur cet appareil.</p>
-    </div>
-    <div style="background:var(--tl);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:.87rem">
-      <div><strong>Équipe :</strong> ${data.g.n}</div>
-      <div><strong>Score actuel :</strong> ${data.pts} pts</div>
-      <div><strong>Dernière sauvegarde :</strong> ${when}</div>
-    </div>
-    ${btn('▶️ Reprendre la partie','resumeGame()','teal','full lg')}
-    <div style="margin-top:10px">${btn('🔄 Recommencer à zéro (efface la sauvegarde)','restartFresh()','gray','full sm')}</div>
-  </div></div>`;
-}
-function resumeGame(){
-  const data=loadProgress(F._pendingKey);
-  if(!data){go('grp');return;}
-  Object.assign(S,data);
-  S._teamKey=F._pendingKey;
-  F={};
-  const safe=['m1i','m2i','m3i','m4i','m5i','m1d','m2d','m3d','m4d','m5d','fin','vic','rep'];
-  go(safe.includes(data.scr)?data.scr:'m1i');
-}
-function restartFresh(){
-  const key=F._pendingKey,name=F._pendingName,parts=F._pendingParts;
-  clearProgress(key);
-  actuallyStartFresh(name,parts,key);
 }
 
 /* ═══════════════════════════ WRITTEN EXERCISES (QCM / VF / MATCH) ═══════════════════════════ */
@@ -560,15 +578,17 @@ function goWrittenAttempt(mission,kind,attIdx,banner){
     go('wex',{mission,kind,ps,sh:shuf(ps.map((_,i)=>i)),sel:null,mt:{},done:false,_banner:banner});
   }
 }
-function resolveWritten(mission,kind,score,total,wrongItems){
+function resolveWritten(mission,kind,score,total,items,extra={}){
   const att=S.att[mission];
   let passed,ptsDelta;
   if(att===1){passed=score>=Math.ceil(total*0.8);ptsDelta=passed?50:-10;}
   else if(att===2){passed=score>=Math.ceil(total*0.7);ptsDelta=passed?30:-15;}
   else{passed=score>=Math.ceil(total*0.5);ptsDelta=Math.round(score/total*20);}
   S.pts=S.pts+ptsDelta;
-  S.res[mission+'-t'+att]={score,total,success:passed,pts:ptsDelta};
-  if(!passed)S.wr.push(...wrongItems);
+  /* `items` holds the full transcript of the attempt — every question with the
+     answer given and the correct one, whether right or wrong — so the report
+     can show the complete unfolding of the exercise, not only the mistakes. */
+  S.res[mission+'-t'+att]=Object.assign({score,total,success:passed,pts:ptsDelta,items},extra);
   if(passed||att===3){
     goMissionDone(mission);
   }else{
@@ -677,19 +697,19 @@ function selW(i){if(E.done||E.mt[i]!=null)return;E.sel=E.sel===i?null:i;render()
 function selD(orig){if(E.done||Object.values(E.mt||{}).includes(orig)||E.sel==null)return;if(!E.mt)E.mt={};E.mt[E.sel]=orig;E.sel=null;render();}
 
 function wexDone(){
-  const{mission,kind,qs,ps,ans={},mt={}}=E;
+  const{mission,kind,qs,ps,ans={},mt={},title}=E;
   if(kind==='qcm'){
-    const score=qs.filter((_,i)=>ans[i]===qs[i].c).length;
-    const wrong=qs.flatMap((q,i)=>ans[i]!==q.c?[{level:'M1',question:q.q,given:ans[i]!=null?q.o[ans[i]]:'—',correct:q.o[q.c]}]:[]);
-    resolveWritten(mission,kind,score,qs.length,wrong);
+    const items=qs.map((q,i)=>({question:q.q,given:ans[i]!=null?q.o[ans[i]]:'—',correct:q.o[q.c],ok:ans[i]===q.c}));
+    const score=items.filter(x=>x.ok).length;
+    resolveWritten(mission,kind,score,qs.length,items);
   }else if(kind==='vf'){
-    const score=qs.filter((q,i)=>ans[i]===q.a).length;
-    const wrong=qs.flatMap((q,i)=>ans[i]!==q.a?[{level:'M2',question:q.s,given:ans[i]?'VRAI':'FAUX',correct:q.a?'VRAI':'FAUX'}]:[]);
-    resolveWritten(mission,kind,score,qs.length,wrong);
+    const items=qs.map((q,i)=>({question:q.s,given:ans[i]===true?'VRAI':(ans[i]===false?'FAUX':'—'),correct:q.a?'VRAI':'FAUX',ok:ans[i]===q.a}));
+    const score=items.filter(x=>x.ok).length;
+    resolveWritten(mission,kind,score,qs.length,items,{title});
   }else if(kind==='match3'){
-    const score=ps.filter((_,i)=>mt[i]===i).length;
-    const wrong=ps.flatMap((p,i)=>mt[i]!==i?[{level:'M3',question:`Match: ${p.w}`,given:mt[i]!=null?ps[mt[i]]?.d:'—',correct:p.d}]:[]);
-    resolveWritten(mission,kind,score,ps.length,wrong);
+    const items=ps.map((p,i)=>({question:`${p.w}`,given:mt[i]!=null?(ps[mt[i]]?.d||'—'):'—',correct:p.d,ok:mt[i]===i}));
+    const score=items.filter(x=>x.ok).length;
+    resolveWritten(mission,kind,score,ps.length,items);
   }
 }
 
@@ -711,12 +731,16 @@ function goOralAttempt(mission,attIdx,banner){
 }
 function resolveOral(mission,grade){
   const att=S.att[mission];
+  const content=E.content,roles=E.roles;
+  const nameA=`${S.g.p[roles.a].fn}-${S.g.p[roles.a].ln}`;
+  const nameB=`${S.g.p[roles.b].fn}-${S.g.p[roles.b].ln}`;
   let passed,ptsDelta;
   if(att===1){passed=grade>=9;ptsDelta=passed?50:-10;}
   else if(att===2){passed=grade>=8;ptsDelta=passed?30:-15;}
   else{passed=grade>=8;ptsDelta=grade*2;}
   S.pts=S.pts+ptsDelta;
-  S.res[mission+'-t'+att]={grade,success:passed,pts:ptsDelta};
+  S.res[mission+'-t'+att]={grade,success:passed,pts:ptsDelta,
+    scenarioTitle:content.t,roleABrief:content.a.w,roleBBrief:content.b.w,playerA:nameA,playerB:nameB};
   if(passed||att===3){
     go('m4d');
     saveProgress();
@@ -838,7 +862,12 @@ function vFinal(){
   </div>`;
 }
 function checkFinal(){
-  const v=((document.getElementById('fc')||{}).value||'').trim().toUpperCase().replace(/\s+/g,' ');
+  const raw=(document.getElementById('fc')||{}).value||'';
+  /* Normalise generously: collapse any kind of whitespace (including the
+     non-breaking spaces some mobile/tablet keyboards insert), strip stray
+     punctuation, and ignore case — so small typing quirks don't block a
+     correct answer. */
+  const v=raw.normalize('NFKC').replace(/[^\p{L}\s]/gu,'').replace(/\s+/g,' ').trim().toUpperCase();
   if(v==='YOU HAVE GOT THE JOB'){
     S.pts=S.pts+10;
     S.res['final']={success:true,pts:10,attempts:S.finalAtt};
@@ -914,26 +943,34 @@ function vReport(){
         const bg=v.success?'#EDF7EE':'#FFEBEE';
         const bc=v.success?'var(--green)':'var(--red)';
         const lbl=v.success?'✓ Réussi':'';
-        return `<div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:6px;font-size:.86rem">
-          <strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} — ${v.grade}/10 <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span>
+        return `<div style="padding:11px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:8px;font-size:.86rem">
+          <div><strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} — ${v.grade}/10 <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span></div>
+          ${v.scenarioTitle?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);font-size:.82rem;color:#444">
+            <div style="font-weight:700;margin-bottom:5px">🎭 Scénario : ${v.scenarioTitle}</div>
+            <div style="margin-bottom:3px"><strong style="color:var(--teal)">${v.playerA} (Recruteur) :</strong> ${v.roleABrief}</div>
+            <div><strong style="color:var(--coral)">${v.playerB} (Candidat) :</strong> ${v.roleBBrief}</div>
+          </div>`:''}
         </div>`;
       }).join('');
-      return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}<p style="color:#AAA;font-size:.78rem;margin-top:8px">🎭 Rôles tirés au sort à chaque tentative — Recruteur / Candidat.</p></div>`;
+      return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}</div>`;
     }
     const rows=attempts.map(([k,v])=>{
       const attN=k.split('-t')[1];
       const bg=v.success?'#EDF7EE':'#FFEBEE';
       const bc=v.success?'var(--green)':'var(--red)';
       const lbl=v.success?'✓ Réussi':'';
-      return `<div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:6px;font-size:.86rem">
-        <strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''} — ${v.score}/${v.total} <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span>
+      const itemsHtml=(v.items||[]).map(it=>`<div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:8px;background:${it.ok?'#F3FAF3':'#FDF3F3'};margin-bottom:5px;font-size:.82rem">
+        <span style="flex-shrink:0;font-weight:800;color:${it.ok?'var(--green)':'var(--red)'}">${it.ok?'✓':'✗'}</span>
+        <span style="flex:1"><strong style="color:#333">${it.question}</strong><br>
+          <span style="color:${it.ok?'var(--green)':'var(--red)'}">Réponse donnée : ${it.given}</span>${!it.ok?`<br><span style="color:var(--green)">Réponse correcte : ${it.correct}</span>`:''}
+        </span>
+      </div>`).join('');
+      return `<div style="padding:9px 13px;border-radius:9px;background:${bg};border-left:4px solid ${bc};margin-bottom:8px;font-size:.86rem">
+        <div><strong>Tentative ${attN}</strong> ${lbl?`<span style="color:${bc};font-weight:700">${lbl}</span>`:''}${v.title?` — <em style="color:#666">${v.title}</em>`:''} — ${v.score}/${v.total} <span style="float:right;color:${bc};font-weight:700">${v.pts>=0?'+':''}${v.pts} pts</span></div>
+        <details style="margin-top:8px"><summary style="cursor:pointer;font-size:.8rem;color:var(--teal2);font-weight:700">Voir le détail des ${v.total} questions</summary><div style="margin-top:8px">${itemsHtml}</div></details>
       </div>`;
     }).join('');
-    const corrections=S.wr.filter(w=>w.level===m.level);
-    const correctionsHtml=corrections.length
-      ?`<div style="margin-top:10px"><div style="font-weight:800;color:var(--red);font-size:.8rem;margin-bottom:6px">Corrections</div>${corrections.map(w=>`<div style="background:#fff;border:1px solid #E3D9D9;border-radius:9px;padding:11px;margin-bottom:8px"><div style="font-weight:700;font-size:.84rem;color:#333">${w.question}</div><div style="color:var(--red);font-size:.8rem;margin-top:3px">✗ Réponse donnée : ${w.given||'—'}</div><div style="color:var(--green);font-size:.8rem">✓ Réponse correcte : ${w.correct}</div></div>`).join('')}</div>`
-      :`<div class="ok" style="margin-top:8px;text-align:center;font-size:.82rem">🏆 Aucune erreur</div>`;
-    return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}${correctionsHtml}</div>`;
+    return `<div class="card"><div class="pop" style="color:var(--teal);margin-bottom:10px">${m.icon} ${m.title}</div>${rows}</div>`;
   }).join('');
   const fr=S.res['final'];
   const finalBlock=fr?(()=>{
@@ -1018,7 +1055,7 @@ function vRGPD(){
         <p style="color:#333;font-size:.88rem;line-height:1.82">Les seules données saisies sont : les deux premières lettres de votre prénom et de votre nom (utilisées uniquement pour générer un identifiant au format XX-YY, sans jamais collecter votre identité complète), ainsi que vos réponses aux exercices.</p>
       </div>
       <div class="card" style="padding:15px 16px">
-        <p style="color:#333;font-size:.88rem;line-height:1.82">Votre progression (identifiant, réponses, score) est enregistrée localement dans la mémoire de stockage de votre navigateur (localStorage), sur cet appareil uniquement, afin de vous permettre de reprendre la partie lors d'une prochaine séance. Ces données ne sont jamais transmises à un serveur ni à un tiers. Vous pouvez les supprimer à tout moment en choisissant « Recommencer à zéro » sur l'écran d'identification, ou en effaçant les données de navigation de votre navigateur.</p>
+        <p style="color:#333;font-size:.88rem;line-height:1.82">Ces données sont sauvegardées en stockage local uniquement (sur l'appareil utilisé par l'élève uniquement), afin de permettre de reprendre la partie lors d'une prochaine séance. Elles ne sont jamais transmises à un serveur ni à un tiers. Vous pouvez les supprimer à tout moment via le bouton « Effacer » sur l'écran d'identification, ou en effaçant les données de navigation de votre navigateur.</p>
       </div>
       <div class="card" style="padding:15px 16px">
         <p style="color:#333;font-size:.88rem;line-height:1.82">Le PDF ou le fichier Word généré est créé localement dans votre navigateur ; il n'est envoyé à personne automatiquement. C'est à vous de le transmettre à votre professeur.</p>
@@ -1039,7 +1076,6 @@ function view(){
   if(sc==='tdb')return vTeacher();
   if(sc==='slg')return vLogin('Connexion Équipe','grp');
   if(sc==='grp')return vGroup();
-  if(sc==='resume')return vResume();
 
   const W=hdr;
   /* Mission 1 — The Job Ad (QCM) */
